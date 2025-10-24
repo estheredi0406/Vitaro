@@ -2,8 +2,6 @@
 
 # Vitaro Project: Work Distribution Strategy for 5 Team Members
 
-Based on your project requirements and the need for equal, non-overlapping contributions with clear Git history, here's a recommended breakdown:
-
 ---
 
 ## **Team Structure & Role Assignment**
