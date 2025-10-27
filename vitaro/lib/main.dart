@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vitaro/core/theme/app_theme.dart';
+import 'package:vitaro/core/utils/widget_testbed_screen.dart'; // Add this import
 
 // 1. Import the generated file
 import 'package:vitaro/firebase_options.dart';
@@ -28,7 +29,8 @@ class VitaroApp extends StatelessWidget {
       title: 'Vitaro',
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
-      home: const LoadingPage(), // Your app starts here
+      // home: const LoadingPage(), // <-- Comment this out
+      home: const WidgetTestbedScreen(), // <-- Add this line
     );
   }
 }
