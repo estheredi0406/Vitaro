@@ -50,7 +50,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB-bwVk0nMs3sI8WglOkbXAYPUruB1YDgA',
+    apiKey: 'AIzaSyBTq7kzKYS8DySbwM8JfzdZocs2aRFUQwY',
     appId: '1:284994311059:android:12c07c25af499893524e66',
     messagingSenderId: '284994311059',
     projectId: 'vitaro-4d136',
@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDw8CKJcja1ZomGL5wtmmyLYEc29fqusII',
+    apiKey: 'AIzaSyAOry_QqrymqkX9K_YOEoAJ_DF-lxl5LPk',
     appId: '1:284994311059:ios:92da814a6c8b027f524e66',
     messagingSenderId: '284994311059',
     projectId: 'vitaro-4d136',
@@ -68,4 +68,5 @@ class DefaultFirebaseOptions {
     iosClientId: '284994311059-he7bdqs24rjqp30jj6pe28qvgf35sn4m.apps.googleusercontent.com',
     iosBundleId: 'com.example.vitaro',
   );
+
 }

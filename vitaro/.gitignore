@@ -78,3 +78,24 @@ ios/DerivedData/
 # Obsolete Dart file
 # ------------------
 .packages
+
+# Firebase
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+firestore-debug.log
+ui-debug.log
+.firebase/
+
+# Firebase Hosting (if using)
+.firebase/hosting.*.cache
+
+# Firebase Functions (if using)
+functions/node_modules/
+functions/.env
+functions/lib/
+
+# Environment variables with sensitive data
+.env
+.env.local
+.env.*.local
