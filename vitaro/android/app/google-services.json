@@ -21,7 +21,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB-bwVk0nMs3sI8WglOkbXAYPUruB1YDgA"
+          "current_key": "AIzaSyBTq7kzKYS8DySbwM8JfzdZocs2aRFUQwY"
         }
       ],
       "services": {
@@ -30,6 +30,13 @@
             {
               "client_id": "284994311059-nsd1bq2j9n9g91jdbegsij8834nnfier.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "284994311059-he7bdqs24rjqp30jj6pe28qvgf35sn4m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.vitaro"
+              }
             }
           ]
         }
