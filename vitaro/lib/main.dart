@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:vitaro/core/theme/app_theme.dart';
-// Later import BLoC providers and router here
+
+// 1. Import the generated file
+import 'package:vitaro/firebase_options.dart';
+
+// 2. Import Firebase Core
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
-  // Add Firebase init here later
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  // 3. Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 4. Initialize Firebase using the generated options
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(const VitaroApp());
 }
@@ -15,12 +24,11 @@ class VitaroApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Later, we will wrap this with MultiBlocProvider
     return MaterialApp(
       title: 'Vitaro',
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
-      home: const LoadingPage(), // From your Figma
+      home: const LoadingPage(),
     );
   }
 }
