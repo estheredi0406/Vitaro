@@ -1,3 +1,7 @@
+<!-- ========================================= -->
+<!-- FCM CONFIGURATION - Added by Member 4    -->
+<!-- DO NOT REMOVE - Required for notifications -->
+<!-- ========================================= --> 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:label="vitaro"
@@ -25,12 +29,23 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        
+        <!-- FCM: Notification Channel ID -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="emergency_alerts_channel" />
+            
+        <!-- FCM: Default Notification Icon -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+        
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-    </application>
+    </application> 
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
