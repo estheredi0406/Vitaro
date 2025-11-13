@@ -28,46 +28,56 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo with red background
+            // Logo with professional shadow
             Container(
-              width: 100,
-              height: 100,
+              width: 120,
+              height: 120,
               decoration: BoxDecoration(
                 color: const Color(0xFFE53935),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0x4DE53935),
+                    blurRadius: 24,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
               ),
               child: const Icon(
                 Icons.water_drop,
                 color: Colors.white,
-                size: 50,
+                size: 60,
               ),
             ),
-            const SizedBox(height: 24),
-            // App name
+            const SizedBox(height: 28),
+            // App name with professional typography
             const Text(
               'Vitaro',
               style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
+                fontSize: 40,
+                fontWeight: FontWeight.w700,
                 color: Color(0xFFE53935),
+                letterSpacing: -0.8,
               ),
             ),
-            const SizedBox(height: 8),
-            // Slogan
-            const Text(
+            const SizedBox(height: 10),
+            // Slogan with professional typography
+            Text(
               'Connect. Donate. Save Lives.',
               style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
+                fontSize: 15,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.3,
               ),
             ),
-            const SizedBox(height: 40),
-            // Loading indicator
+            const SizedBox(height: 56),
+            // Professional loading indicator
             const SizedBox(
-              width: 30,
-              height: 30,
+              width: 36,
+              height: 36,
               child: CircularProgressIndicator(
-                strokeWidth: 3,
+                strokeWidth: 3.5,
                 valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFE53935)),
               ),
             ),
