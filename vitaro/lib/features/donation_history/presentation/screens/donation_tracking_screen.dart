@@ -8,7 +8,6 @@ class DonationTrackingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine the current step based on the string from Firebase
     int currentStepIndex = 0;
     String status = donation.status.toLowerCase();
 
@@ -54,7 +53,6 @@ class DonationTrackingScreen extends StatelessWidget {
             ),
             const SizedBox(height: 40),
 
-            // Timeline Items (Logic: isActive if the step number is <= currentStepIndex)
             _buildTimelineItem(
               title: "Donation",
               subtitle: "Completed successfully",

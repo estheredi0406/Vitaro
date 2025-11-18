@@ -31,7 +31,6 @@ class DonationModel extends Donation {
       amountMl: json['amountMl'] ?? 0,
       date: (json['date'] as Timestamp).toDate(),
       bloodType: json['bloodType'] ?? 'Unknown',
-      // FIX 1: Read status from Firebase
       status: json['status'] ?? 'Processing',
     );
   }
@@ -43,7 +42,6 @@ class DonationModel extends Donation {
       'amountMl': amountMl,
       'date': Timestamp.fromDate(date),
       'bloodType': bloodType,
-      // FIX 2: Save status to Firebase
       'status': status,
     };
   }

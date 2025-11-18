@@ -33,15 +33,12 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // We wrap the Scaffold in the BlocBuilder so the FAB can access the state
     return BlocBuilder<DonationHistoryBloc, DonationHistoryState>(
       builder: (context, state) {
-        // --- ELIGIBILITY LOGIC ---
         bool isEligible = true;
         DateTime? nextDate;
 
         if (state is DonationHistoryLoaded && state.donations.isNotEmpty) {
-          // Assuming the list is sorted by date descending (newest first)
           final lastDonation = state.donations.first.date;
           final difference = DateTime.now().difference(lastDonation).inDays;
 
@@ -71,9 +68,7 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
               )
             ],
           ),
-          // --- DYNAMIC BUTTON ---
           floatingActionButton: FloatingActionButton.extended(
-            // If eligible -> Red, If not -> Grey
             backgroundColor: isEligible ? const Color(0xFFD32F2F) : Colors.grey,
             foregroundColor: Colors.white,
             onPressed: isEligible
@@ -89,7 +84,6 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
             icon: Icon(isEligible ? Icons.add : Icons.lock_clock,
                 color: Colors.white),
           ),
-
           body: Builder(
             builder: (context) {
               if (state is DonationHistoryLoading) {
@@ -130,7 +124,6 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
                         ],
                       ),
                     ),
-
                     Expanded(
                       child: state.donations.isEmpty
                           ? _buildEmptyState()
@@ -186,7 +179,6 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
                                           ],
                                         ),
                                       ),
-                                      // Status Chip
                                       Container(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 8, vertical: 4),
@@ -223,8 +215,6 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
                               },
                             ),
                     ),
-
-                    // Summary Section
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(

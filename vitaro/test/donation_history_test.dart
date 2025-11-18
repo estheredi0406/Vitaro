@@ -5,12 +5,11 @@ import 'package:vitaro/features/donation_history/domain/entities/donation.dart';
 import 'package:vitaro/features/donation_history/domain/repositories/donation_repository.dart';
 import 'package:vitaro/features/donation_history/presentation/bloc/donation_history_bloc.dart';
 import 'package:vitaro/features/donation_history/presentation/bloc/donation_history_state.dart';
+import 'package:vitaro/features/donation_history/presentation/bloc/donation_history_event.dart'; // <--- ADDED THIS IMPORT
 import 'package:vitaro/features/donation_history/presentation/screens/donation_history_screen.dart';
 
-// 1. Create a Mock Repository
-class MockDonationRepository extends Fake implements DonationRepository {}
+class FakeDonationRepository extends Fake implements DonationRepository {}
 
-// 2. Create a Fake Bloc
 class FakeDonationHistoryBloc
     extends Bloc<DonationHistoryEvent, DonationHistoryState>
     implements DonationHistoryBloc {
@@ -19,10 +18,8 @@ class FakeDonationHistoryBloc
   }
 
   @override
-  final DonationRepository donationRepository = MockDonationRepository();
+  final DonationRepository donationRepository = FakeDonationRepository();
 
-  // *** THE FIX ***
-  // We create a public method to call the protected 'emit' function
   void addTestState(DonationHistoryState newState) {
     emit(newState);
   }
@@ -33,10 +30,11 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
-  testWidgets('Displays donation history list when data is loaded',
+  testWidgets('Renders Donation History List correctly',
       (WidgetTester tester) async {
-    // Setup
+    // --- ARRANGE ---
     final mockBloc = FakeDonationHistoryBloc();
+
     final testDonations = [
       Donation(
           id: '1',
@@ -44,12 +42,16 @@ void main() {
           amountMl: 450,
           date: DateTime.now(),
           status: 'Completed'),
+      Donation(
+          id: '2',
+          location: 'Butare Clinic',
+          amountMl: 300,
+          date: DateTime.now(),
+          status: 'Processing'),
     ];
 
-    // Inject the state using our new helper method
     mockBloc.addTestState(DonationHistoryLoaded(donations: testDonations));
 
-    // Build the App
     await tester.pumpWidget(
       MaterialApp(
         home: BlocProvider<DonationHistoryBloc>.value(
@@ -59,11 +61,30 @@ void main() {
       ),
     );
 
-    // Wait for UI to settle
     await tester.pumpAndSettle();
 
-    // Verify the text appears on screen
     expect(find.text('Kigali Center'), findsOneWidget);
-    expect(find.text('Track'), findsOneWidget);
+    expect(find.text('Butare Clinic'), findsOneWidget);
+    expect(find.text('Track'), findsNWidgets(2));
+  });
+
+  testWidgets('Renders Empty State when no donations exist',
+      (WidgetTester tester) async {
+    final mockBloc = FakeDonationHistoryBloc();
+    mockBloc.addTestState(const DonationHistoryLoaded(donations: []));
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<DonationHistoryBloc>.value(
+          value: mockBloc,
+          child: const DonationHistoryScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('No donations yet. Add one!'), findsOneWidget);
+    expect(find.byIcon(Icons.history), findsOneWidget);
   });
 }
