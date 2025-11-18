@@ -7,7 +7,7 @@ class ImpactChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 250, // Height of the chart card
+      height: 250,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -25,7 +25,7 @@ class ImpactChart extends StatelessWidget {
           Expanded(
             child: BarChart(
               BarChartData(
-                gridData: const FlGridData(show: false), // Hide grid lines
+                gridData: const FlGridData(show: false),
                 titlesData: FlTitlesData(
                   leftTitles: const AxisTitles(
                       sideTitles: SideTitles(showTitles: false)),
@@ -60,9 +60,8 @@ class ImpactChart extends StatelessWidget {
                             text = '';
                         }
 
-                        // --- FIX IS HERE ---
                         return SideTitleWidget(
-                          meta: meta, // We pass the entire 'meta' object now
+                          meta: meta,
                           space: 4,
                           child: Text(text, style: style),
                         );
@@ -72,10 +71,10 @@ class ImpactChart extends StatelessWidget {
                 ),
                 borderData: FlBorderData(show: false),
                 barGroups: [
-                  _makeBarGroup(0, 1), // Jan: 1 life
-                  _makeBarGroup(1, 3), // Apr: 3 lives
-                  _makeBarGroup(2, 2), // Aug: 2 lives
-                  _makeBarGroup(3, 5), // Dec: 5 lives
+                  _makeBarGroup(0, 1),
+                  _makeBarGroup(1, 3),
+                  _makeBarGroup(2, 2),
+                  _makeBarGroup(3, 5),
                 ],
               ),
             ),

@@ -6,7 +6,7 @@ class Donation extends Equatable {
   final int amountMl;
   final DateTime date;
   final String bloodType;
-  final String status; // <--- ADDED THIS
+  final String status;
 
   const Donation({
     this.id = '',
@@ -14,7 +14,7 @@ class Donation extends Equatable {
     required this.amountMl,
     required this.date,
     this.bloodType = 'Unknown',
-    this.status = 'Completed', // Default value
+    this.status = 'Completed',
   });
 
   @override

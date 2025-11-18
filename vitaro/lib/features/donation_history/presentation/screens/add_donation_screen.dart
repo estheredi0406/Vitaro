@@ -37,7 +37,6 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Define Vitaro Red
     const Color vitaroRed = Color(0xFFD32F2F);
 
     return Scaffold(
@@ -61,7 +60,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                 backgroundColor: Colors.green,
               ),
             );
-            Navigator.pop(context, true); // Pass 'true' back to trigger refresh
+            Navigator.pop(context, true);
           } else if (state is AddDonationFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error: ${state.message}')),

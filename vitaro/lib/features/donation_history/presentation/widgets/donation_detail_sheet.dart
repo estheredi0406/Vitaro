@@ -69,7 +69,6 @@ class DonationDetailSheet extends StatelessWidget {
 
           const Divider(height: 40),
 
-          // --- Details Grid ---
           Row(
             children: [
               _buildInfoItem(

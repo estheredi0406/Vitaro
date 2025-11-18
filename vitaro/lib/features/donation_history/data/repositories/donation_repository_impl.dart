@@ -5,7 +5,6 @@ import 'package:vitaro/features/donation_history/domain/entities/donation.dart';
 import 'package:vitaro/features/donation_history/domain/repositories/donation_repository.dart';
 
 class DonationRepositoryImpl implements DonationRepository {
-  // Note the exact names here: 'remoteDataSource' and 'authRepository'
   final DonationRemoteDataSource remoteDataSource;
   final AuthRepository authRepository;
 
@@ -21,7 +20,6 @@ class DonationRepositoryImpl implements DonationRepository {
 
     final donationModel = DonationModel.fromEntity(donation);
 
-    // Uses 'remoteDataSource', matching the variable name above
     await remoteDataSource.addDonation(donationModel, userId);
   }
 
