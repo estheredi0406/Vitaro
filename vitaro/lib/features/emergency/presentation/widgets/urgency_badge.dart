@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class UrgencyBadge extends StatelessWidget {
   final String level; // 'Critical', 'Urgent', 'Moderate'
 
-  const UrgencyBadge({Key? key, required this.level}) : super(key: key);
+  const UrgencyBadge({super.key, required this.level});
 
   @override
   Widget build(BuildContext context) {

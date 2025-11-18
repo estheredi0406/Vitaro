@@ -8,11 +8,11 @@ class DonorInfoFormScreen extends StatefulWidget {
   final String bloodTypeNeeded;
 
   const DonorInfoFormScreen({
-    Key? key,
+    super.key,
     required this.alertId,
     required this.hospitalName,
     required this.bloodTypeNeeded,
-  }) : super(key: key);
+  });
 
   @override
   State<DonorInfoFormScreen> createState() => _DonorInfoFormScreenState();
@@ -30,7 +30,7 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
 
   String _selectedBloodType = 'A+';
   String? _lastDonationDate;
-  bool _isSubmitting = false;
+  final bool _isSubmitting = false;
 
   final List<String> _bloodTypes = [
     'A+',
@@ -187,7 +187,7 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
 
               // Blood Type
               DropdownButtonFormField<String>(
-                value: _selectedBloodType,
+                initialValue: _selectedBloodType,
                 decoration: InputDecoration(
                   labelText: 'Your Blood Type *',
                   prefixIcon: const Icon(Icons.water_drop),

@@ -8,7 +8,7 @@ import '../widgets/alert_card.dart';
 import 'donor_info_form_screen.dart';
 
 class EmergencyAlertsScreen extends StatefulWidget {
-  const EmergencyAlertsScreen({Key? key}) : super(key: key);
+  const EmergencyAlertsScreen({super.key});
 
   @override
   State<EmergencyAlertsScreen> createState() => _EmergencyAlertsScreenState();

@@ -24,7 +24,7 @@ void main() async {
 }
 
 class TestEmergencyApp extends StatelessWidget {
-  const TestEmergencyApp({Key? key}) : super(key: key);
+  const TestEmergencyApp({super.key});
 
   @override
   Widget build(BuildContext context) {

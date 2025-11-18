@@ -55,7 +55,6 @@ class AlertNotificationService {
     await _localNotifications.initialize(
       settings,
       onDidReceiveNotificationResponse: (details) {
-        ;
       },
     );
 

@@ -7,8 +7,7 @@ class AlertCard extends StatelessWidget {
   final EmergencyAlertModel alert;
   final VoidCallback onRespond;
 
-  const AlertCard({Key? key, required this.alert, required this.onRespond})
-    : super(key: key);
+  const AlertCard({super.key, required this.alert, required this.onRespond});
 
   @override
   Widget build(BuildContext context) {

@@ -10,7 +10,7 @@ import '../../data/repositories/emergency_repository.dart';
 class AlertDetailsScreen extends StatelessWidget {
   final EmergencyAlertModel alert;
 
-  const AlertDetailsScreen({Key? key, required this.alert}) : super(key: key);
+  const AlertDetailsScreen({super.key, required this.alert});
 
   @override
   Widget build(BuildContext context) {
