@@ -7,62 +7,49 @@ class EmergencyRepository {
 
   // Get all active emergency alerts
   Stream<List<EmergencyAlertModel>> getActiveAlerts() {
-    print('🔍 ========================================');
-    print('🔍 Getting ALL documents');
-    print('🔍 Collection: $_collectionName');
-    print('🔍 ========================================');
-
     return _firestore
         .collection(_collectionName)
         .snapshots()
         .map((snapshot) {
-          print('\n🔍 ========== FIRESTORE RESPONSE ==========');
-          print('🔍 Total documents received: ${snapshot.docs.length}');
-
-          final List<EmergencyAlertModel> alerts = [];
-
-          for (var doc in snapshot.docs) {
-            print('\n📄 ===== Document ${doc.id} =====');
-
-            try {
-              final alert = EmergencyAlertModel.fromFirestore(doc);
-              alerts.add(alert);
-              print('✅ PARSED SUCCESSFULLY!');
-              print('   Hospital: ${alert.hospitalName}');
-              print('   Blood Type: ${alert.bloodType}');
-            } catch (e) {
-              print('❌ ERROR PARSING DOCUMENT: $e');
-            }
-          }
-
-          print('\n🔍 Total alerts parsed: ${alerts.length}');
-          print('🔍 ===============================\n');
-
-          return alerts;
+          return snapshot.docs
+              .map((doc) {
+                try {
+                  return EmergencyAlertModel.fromFirestore(doc);
+                } catch (e) {
+                  print('Error parsing alert ${doc.id}: $e');
+                  return null;
+                }
+              })
+              .whereType<EmergencyAlertModel>()
+              .toList();
         })
         .handleError((error) {
-          print('❌ STREAM ERROR: $error');
+          print('Error fetching alerts: $error');
           return <EmergencyAlertModel>[];
         });
   }
 
   // Get alerts filtered by blood type
   Stream<List<EmergencyAlertModel>> getAlertsByBloodType(String bloodType) {
-    print('🔍 Fetching alerts for blood type: $bloodType');
-
     return _firestore
         .collection(_collectionName)
         .where('bloodType', isEqualTo: bloodType)
         .snapshots()
         .map((snapshot) {
-          print('🔍 Found ${snapshot.docs.length} alerts for $bloodType');
-
           return snapshot.docs
-              .map((doc) => EmergencyAlertModel.fromFirestore(doc))
+              .map((doc) {
+                try {
+                  return EmergencyAlertModel.fromFirestore(doc);
+                } catch (e) {
+                  print('Error parsing alert ${doc.id}: $e');
+                  return null;
+                }
+              })
+              .whereType<EmergencyAlertModel>()
               .toList();
         })
         .handleError((error) {
-          print('❌ Error fetching $bloodType alerts: $error');
+          print('Error fetching alerts by blood type: $error');
           return <EmergencyAlertModel>[];
         });
   }
@@ -83,7 +70,7 @@ class EmergencyRepository {
       }
       return false;
     } catch (e) {
-      print('❌ Error checking response: $e');
+      print('Error checking user response: $e');
       return false;
     }
   }
@@ -101,14 +88,12 @@ class EmergencyRepository {
     String? medicalNotes,
   }) async {
     try {
-      print('💾 Saving response for: $userName');
-
-      // 1. Add user to the alert's respondedDonors array
+      // Add user to the alert's respondedDonors array
       await _firestore.collection(_collectionName).doc(alertId).update({
         'respondedDonors': FieldValue.arrayUnion([userId]),
       });
 
-      // 2. Create a detailed response record
+      // Create a detailed response record
       await _firestore.collection('alert_responses').add({
         'alertId': alertId,
         'userId': userId,
@@ -120,14 +105,13 @@ class EmergencyRepository {
         'lastDonationDate': lastDonationDate,
         'medicalNotes': medicalNotes ?? 'None',
         'respondedAt': FieldValue.serverTimestamp(),
-        'status': 'Pending', // Pending → Confirmed → Completed
-        'hospitalNotes': '', // Hospital can add notes later
+        'status': 'Pending',
+        'hospitalNotes': '',
       });
 
-      print('✅ Response saved successfully for: $userName ($userPhone)');
       return true;
     } catch (e) {
-      print('❌ Error responding to alert: $e');
+      print('Error responding to alert: $e');
       return false;
     }
   }

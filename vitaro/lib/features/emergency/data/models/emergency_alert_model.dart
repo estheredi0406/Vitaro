@@ -29,20 +29,9 @@ class EmergencyAlertModel {
     this.description,
   });
 
-  // Convert Firestore document to EmergencyAlertModel
   factory EmergencyAlertModel.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-    // DEBUG: Print the ENTIRE raw document
-    print('🔥 ========== RAW FIRESTORE DOCUMENT ==========');
-    print('🔥 Document ID: ${doc.id}');
-    print('🔥 ALL FIELDS:');
-    data.forEach((key, value) {
-      print('   "$key": $value (type: ${value.runtimeType})');
-    });
-    print('🔥 =============================================');
-
-    // Filter out empty/null donor IDs
     List<String> cleanDonors = [];
     if (data['respondedDonors'] != null) {
       final rawDonors = data['respondedDonors'] as List<dynamic>;
@@ -68,7 +57,6 @@ class EmergencyAlertModel {
     );
   }
 
-  // Convert EmergencyAlertModel to Firestore format
   Map<String, dynamic> toFirestore() {
     return {
       'hospitalName': hospitalName,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:vitaro/shared_widgets/screen_app_bar.dart';
+import 'package:vitaro/core/theme/app_theme.dart';
 import '../../data/models/emergency_alert_model.dart';
 import '../../data/repositories/emergency_repository.dart';
 import '../widgets/alert_card.dart';
@@ -30,16 +32,9 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Urgent Blood Requests'),
-        backgroundColor: Colors.red.shade700,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: _showFilterDialog,
-          ),
-        ],
+      appBar: const ScreenAppBar(
+        title: 'Emergency Blood Alerts',
+        showBackArrow: false,
       ),
       body: Column(
         children: [
@@ -52,7 +47,9 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
-                    child: CircularProgressIndicator(color: Colors.red),
+                    child: CircularProgressIndicator(
+                      color: AppTheme.primaryRed,
+                    ),
                   );
                 }
 
@@ -61,17 +58,17 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.error_outline,
                           size: 60,
-                          color: Colors.red.shade300,
+                          color: AppTheme.textLight,
                         ),
                         const SizedBox(height: 16),
-                        Text(
+                        const Text(
                           'Error loading alerts',
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey.shade700,
+                            color: AppTheme.textDark,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -102,14 +99,15 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: AppTheme.textDark,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
+                        const Text(
                           'All blood banks are currently stable',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey.shade600,
+                            color: AppTheme.textLight,
                           ),
                         ),
                       ],
@@ -144,7 +142,7 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
   Widget _buildFilterChips() {
     return Container(
       height: 60,
-      color: Colors.red.shade50,
+      color: AppTheme.secondaryRed.withOpacity(0.2),
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -160,9 +158,9 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
                   _selectedFilter = bloodType;
                 });
               },
-              selectedColor: Colors.red.shade700,
+              selectedColor: AppTheme.primaryRed,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : Colors.black87,
+                color: isSelected ? Colors.white : AppTheme.textDark,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),
@@ -172,37 +170,11 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
     );
   }
 
-  void _showFilterDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Filter by Blood Type'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: _bloodTypes.map((bloodType) {
-            return RadioListTile<String>(
-              title: Text(bloodType),
-              value: bloodType,
-              groupValue: _selectedFilter,
-              onChanged: (value) {
-                setState(() {
-                  _selectedFilter = value!;
-                });
-                Navigator.pop(context);
-              },
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
   Future<void> _handleResponse(EmergencyAlertModel alert) async {
     final user = FirebaseAuth.instance.currentUser;
     final userId =
         user?.uid ?? 'guest_${DateTime.now().millisecondsSinceEpoch}';
 
-    // Check if already responded
     final hasResponded = await _repository.hasUserResponded(alert.id, userId);
     if (hasResponded) {
       if (mounted) {
@@ -216,7 +188,6 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
       return;
     }
 
-    // Navigate to donor information form
     final donorInfo = await Navigator.push<Map<String, dynamic>>(
       context,
       MaterialPageRoute(
@@ -228,10 +199,8 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
       ),
     );
 
-    // If user cancelled or didn't submit
     if (donorInfo == null) return;
 
-    // Show loading
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -254,7 +223,6 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
       );
     }
 
-    // Save response with all collected information
     final success = await _repository.respondToAlert(
       alert.id,
       userId,
@@ -307,7 +275,7 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
               Text('Failed to send response. Please try again.'),
             ],
           ),
-          backgroundColor: Colors.red.shade600,
+          backgroundColor: AppTheme.primaryRed,
           action: SnackBarAction(
             label: 'Retry',
             textColor: Colors.white,
