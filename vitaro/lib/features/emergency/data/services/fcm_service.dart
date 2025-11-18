@@ -1,11 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'dart:io' show Platform;
 
 // Top-level function for background message handling
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('📩 Background message: ${message.notification?.title}');
+  // Background message received
 }
 
 class FCMService {
@@ -17,14 +16,9 @@ class FCMService {
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
-  // Initialize FCM
   Future<void> initialize() async {
-    print('🔥 Initializing FCM Service...');
-
-    // Register background message handler
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    // Request permission (important for iOS)
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
       badge: true,
@@ -32,58 +26,35 @@ class FCMService {
       provisional: false,
     );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('✅ User granted notification permission');
-    } else if (settings.authorizationStatus ==
-        AuthorizationStatus.provisional) {
-      print('⚠️ User granted provisional permission');
-    } else {
-      print('❌ User denied notification permission');
+    if (settings.authorizationStatus != AuthorizationStatus.authorized &&
+        settings.authorizationStatus != AuthorizationStatus.provisional) {
       return;
     }
 
-    // Get FCM token
     String? token = await _firebaseMessaging.getToken();
-    print('📱 FCM Token: $token');
-    // TODO: Save this token to Firestore for the user profile
+    // TODO: Save token to Firestore for user profile
 
-    // Listen for token refresh
     _firebaseMessaging.onTokenRefresh.listen((newToken) {
-      print('🔄 FCM Token refreshed: $newToken');
       // TODO: Update token in Firestore
     });
 
-    // Subscribe to emergency alerts topic
     await _firebaseMessaging.subscribeToTopic('emergency_alerts');
-    print('✅ Subscribed to emergency_alerts topic');
-
-    // Initialize local notifications
     await _initializeLocalNotifications();
 
-    // Handle foreground messages
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
-
-    // Handle notification taps (app in background)
     FirebaseMessaging.onMessageOpenedApp.listen(_handleNotificationTap);
 
-    // Check if app was opened from a notification
     RemoteMessage? initialMessage = await _firebaseMessaging
         .getInitialMessage();
     if (initialMessage != null) {
-      print('📩 App opened from notification');
       _handleNotificationTap(initialMessage);
     }
-
-    print('✅ FCM Service initialized successfully');
   }
 
-  // Initialize local notifications
   Future<void> _initializeLocalNotifications() async {
-    // Android settings
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // iOS settings
     const DarwinInitializationSettings iosSettings =
         DarwinInitializationSettings(
           requestAlertPermission: true,
@@ -99,37 +70,12 @@ class FCMService {
     await _localNotifications.initialize(
       settings,
       onDidReceiveNotificationResponse: (details) {
-        print('📱 Notification tapped: ${details.payload}');
         // TODO: Navigate to emergency alerts screen
       },
     );
-
-    // Create notification channel for Android
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'emergency_alerts_channel',
-      'Emergency Alerts',
-      description: 'Urgent blood donation requests',
-      importance: Importance.high,
-      playSound: true,
-      enableVibration: true,
-    );
-
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(channel);
-
-    print('✅ Local notifications initialized');
   }
 
-  // Handle message when app is in foreground
   void _handleForegroundMessage(RemoteMessage message) {
-    print('📩 Foreground message received');
-    print('Title: ${message.notification?.title}');
-    print('Body: ${message.notification?.body}');
-
-    // Show notification even when app is in foreground
     _showNotification(
       title: message.notification?.title ?? 'Emergency Alert',
       body: message.notification?.body ?? 'New blood donation request',
@@ -137,16 +83,10 @@ class FCMService {
     );
   }
 
-  // Handle notification tap
   void _handleNotificationTap(RemoteMessage message) {
-    print('📱 User tapped notification');
-    print('Data: ${message.data}');
-
     // TODO: Navigate to emergency alerts screen
-    // Example: Navigator.pushNamed(context, '/emergency-alerts');
   }
 
-  // Show local notification
   Future<void> _showNotification({
     required String title,
     required String body,
@@ -184,13 +124,10 @@ class FCMService {
     );
   }
 
-  // Unsubscribe from topic
   Future<void> unsubscribeFromTopic(String topic) async {
     await _firebaseMessaging.unsubscribeFromTopic(topic);
-    print('✅ Unsubscribed from $topic');
   }
 
-  // Get current FCM token
   Future<String?> getToken() async {
     return await _firebaseMessaging.getToken();
   }

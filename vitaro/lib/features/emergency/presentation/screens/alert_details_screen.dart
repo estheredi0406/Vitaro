@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vitaro/shared_widgets/screen_app_bar.dart';
+import 'package:vitaro/core/theme/app_theme.dart';
 import '../../data/models/emergency_alert_model.dart';
 import '../widgets/urgency_badge.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,10 +15,7 @@ class AlertDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Alert Details'),
-        backgroundColor: Colors.red.shade700,
-      ),
+      appBar: const ScreenAppBar(title: 'Alert Details', showBackArrow: true),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,11 +24,11 @@ class AlertDetailsScreen extends StatelessWidget {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Colors.red.shade700, Colors.red.shade900],
+                  colors: [AppTheme.primaryRed, Color(0xFFAA0000)],
                 ),
               ),
               child: Column(
@@ -76,7 +75,7 @@ class AlertDetailsScreen extends StatelessWidget {
                   // Blood type card
                   _buildInfoCard(
                     icon: Icons.water_drop,
-                    iconColor: Colors.red,
+                    iconColor: AppTheme.primaryRed,
                     title: 'Blood Type Required',
                     value: alert.bloodType,
                     subtitle: '${alert.unitsNeeded} units needed',
@@ -113,7 +112,7 @@ class AlertDetailsScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: AppTheme.textDark,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -127,9 +126,9 @@ class AlertDetailsScreen extends StatelessWidget {
                       ),
                       child: Text(
                         alert.description!,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade800,
+                          color: AppTheme.textDark,
                           height: 1.5,
                         ),
                       ),
@@ -215,9 +214,9 @@ class AlertDetailsScreen extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade600,
+                      color: AppTheme.textLight,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -227,16 +226,16 @@ class AlertDetailsScreen extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: AppTheme.textDark,
                     ),
                   ),
                   if (subtitle != null) ...[
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
-                        color: Colors.grey.shade600,
+                        color: AppTheme.textLight,
                       ),
                     ),
                   ],
@@ -272,7 +271,7 @@ class AlertDetailsScreen extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () => _handleResponse(context),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red.shade700,
+            backgroundColor: AppTheme.primaryRed,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
@@ -324,7 +323,9 @@ class AlertDetailsScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryRed,
+            ),
             child: const Text('Confirm'),
           ),
         ],
@@ -350,9 +351,9 @@ class AlertDetailsScreen extends StatelessWidget {
         Navigator.pop(context);
       } else if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to send response. Please try again.'),
-            backgroundColor: Colors.red,
+          SnackBar(
+            content: const Text('Failed to send response. Please try again.'),
+            backgroundColor: AppTheme.primaryRed,
           ),
         );
       }

@@ -55,8 +55,7 @@ class AlertNotificationService {
     await _localNotifications.initialize(
       settings,
       onDidReceiveNotificationResponse: (details) {
-        print('📱 Notification tapped: ${details.payload}');
-        // TODO: Navigate to emergency alerts screen
+        ;
       },
     );
 

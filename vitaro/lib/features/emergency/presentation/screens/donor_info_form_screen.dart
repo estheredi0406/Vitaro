@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:vitaro/shared_widgets/screen_app_bar.dart';
+import 'package:vitaro/core/theme/app_theme.dart';
 
 class DonorInfoFormScreen extends StatefulWidget {
   final String alertId;
@@ -44,16 +46,15 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedBloodType =
-        widget.bloodTypeNeeded; // Pre-select matching blood type
+    _selectedBloodType = widget.bloodTypeNeeded;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Donor Information'),
-        backgroundColor: Colors.red.shade700,
+      appBar: const ScreenAppBar(
+        title: 'Donor Information',
+        showBackArrow: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -66,16 +67,19 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.red.shade50,
+                  color: AppTheme.secondaryRed.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.red.shade200),
+                  border: Border.all(color: AppTheme.secondaryRed),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.local_hospital, color: Colors.red.shade700),
+                        const Icon(
+                          Icons.local_hospital,
+                          color: AppTheme.primaryRed,
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -83,6 +87,7 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
+                              color: AppTheme.textDark,
                             ),
                           ),
                         ),
@@ -91,9 +96,9 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
                     const SizedBox(height: 8),
                     Text(
                       'Blood Type Needed: ${widget.bloodTypeNeeded}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
-                        color: Colors.red.shade700,
+                        color: AppTheme.primaryRed,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -105,12 +110,16 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
               // Instructions
               const Text(
                 'Please provide your information',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textDark,
+                ),
               ),
               const SizedBox(height: 8),
-              Text(
+              const Text(
                 'The hospital will use this information to contact you and verify your eligibility.',
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+                style: TextStyle(fontSize: 14, color: AppTheme.textLight),
               ),
               const SizedBox(height: 24),
 
@@ -265,8 +274,8 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
                     _lastDonationDate ?? 'Select date',
                     style: TextStyle(
                       color: _lastDonationDate == null
-                          ? Colors.grey.shade600
-                          : Colors.black87,
+                          ? AppTheme.textLight
+                          : AppTheme.textDark,
                     ),
                   ),
                 ),
@@ -292,25 +301,25 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
+                  color: AppTheme.infoBlue,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue.shade200),
+                  border: Border.all(color: AppTheme.infoBlue),
                 ),
-                child: Row(
+                child: const Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Icon(
                       Icons.info_outline,
-                      color: Colors.blue.shade700,
+                      color: AppTheme.textDark,
                       size: 20,
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         'By submitting, you confirm that the information provided is accurate and you are eligible to donate blood.',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.blue.shade900,
+                          color: AppTheme.textDark,
                         ),
                       ),
                     ),
@@ -325,7 +334,7 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
                 child: ElevatedButton(
                   onPressed: _isSubmitting ? null : _submitForm,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade700,
+                    backgroundColor: AppTheme.primaryRed,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -347,6 +356,7 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                 ),
@@ -360,7 +370,6 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      // Return the collected data
       Navigator.pop(context, {
         'userName': _nameController.text.trim(),
         'userPhone': _phoneController.text.trim(),

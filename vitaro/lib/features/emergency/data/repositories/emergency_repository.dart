@@ -16,7 +16,6 @@ class EmergencyRepository {
                 try {
                   return EmergencyAlertModel.fromFirestore(doc);
                 } catch (e) {
-                  print('Error parsing alert ${doc.id}: $e');
                   return null;
                 }
               })
@@ -24,7 +23,6 @@ class EmergencyRepository {
               .toList();
         })
         .handleError((error) {
-          print('Error fetching alerts: $error');
           return <EmergencyAlertModel>[];
         });
   }
@@ -41,7 +39,6 @@ class EmergencyRepository {
                 try {
                   return EmergencyAlertModel.fromFirestore(doc);
                 } catch (e) {
-                  print('Error parsing alert ${doc.id}: $e');
                   return null;
                 }
               })
@@ -49,7 +46,6 @@ class EmergencyRepository {
               .toList();
         })
         .handleError((error) {
-          print('Error fetching alerts by blood type: $error');
           return <EmergencyAlertModel>[];
         });
   }
@@ -70,7 +66,6 @@ class EmergencyRepository {
       }
       return false;
     } catch (e) {
-      print('Error checking user response: $e');
       return false;
     }
   }
@@ -111,7 +106,6 @@ class EmergencyRepository {
 
       return true;
     } catch (e) {
-      print('Error responding to alert: $e');
       return false;
     }
   }
