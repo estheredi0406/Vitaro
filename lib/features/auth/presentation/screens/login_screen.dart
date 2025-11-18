@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:vitaro/core/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,6 +12,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _authService = AuthService();
   bool _isLoading = false;
   bool _obscurePassword = true;
 
@@ -31,39 +32,25 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
     });
 
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+    final result = await _authService.signInWithEmailAndPassword(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message']),
+          backgroundColor: result['success'] ? Colors.green : Colors.red,
+        ),
       );
 
-      if (mounted) {
-        // Navigate to dashboard or home page
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login successful!')),
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      String message = 'An error occurred';
-      if (e.code == 'user-not-found') {
-        message = 'No user found for that email.';
-      } else if (e.code == 'wrong-password') {
-        message = 'Wrong password provided.';
-      } else if (e.code == 'invalid-email') {
-        message = 'Invalid email address.';
-      }
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      // If login successful, navigation will be handled by AuthWrapper
+      // The user will automatically be redirected to the home screen
     }
   }
 

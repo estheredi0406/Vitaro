@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:vitaro/core/services/auth_service.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -17,6 +18,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _authService = AuthService();
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -109,6 +111,106 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         setState(() {
           _isLoading = false;
         });
+      }
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final result = await _authService.signInWithGoogle();
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message']),
+          backgroundColor: result['success'] ? Colors.green : Colors.red,
+        ),
+      );
+
+      // If sign-in successful, save additional user info to Firestore and navigate
+      if (result['success']) {
+        final user = _authService.currentUser;
+        if (user != null) {
+          // Check if user document exists
+          final userDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+
+          // Create user document if it doesn't exist
+          if (!userDoc.exists) {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .set({
+              'email': user.email,
+              'displayName': user.displayName,
+              'photoURL': user.photoURL,
+              'createdAt': FieldValue.serverTimestamp(),
+            });
+          }
+        }
+        // Navigate to home page after successful sign-in
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
+      }
+    }
+  }
+
+  Future<void> _signInWithFacebook() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final result = await _authService.signInWithFacebook();
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message']),
+          backgroundColor: result['success'] ? Colors.green : Colors.red,
+        ),
+      );
+
+      // If sign-in successful, save additional user info to Firestore and navigate
+      if (result['success']) {
+        final user = _authService.currentUser;
+        if (user != null) {
+          // Check if user document exists
+          final userDoc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+
+          // Create user document if it doesn't exist
+          if (!userDoc.exists) {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .set({
+              'email': user.email,
+              'displayName': user.displayName,
+              'photoURL': user.photoURL,
+              'createdAt': FieldValue.serverTimestamp(),
+            });
+          }
+        }
+        // Navigate to home page after successful sign-in
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
       }
     }
   }
@@ -667,13 +769,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     children: [
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Google sign-in coming soon!'),
-                              ),
-                            );
-                          },
+                          onPressed: _isLoading ? null : _signInWithGoogle,
                           icon: Icon(Icons.g_mobiledata, color: Colors.red[700], size: 28),
                           label: const Text(
                             'Google',
@@ -694,13 +790,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Facebook sign-in coming soon!'),
-                              ),
-                            );
-                          },
+                          onPressed: _isLoading ? null : _signInWithFacebook,
                           icon: const Icon(Icons.facebook, color: Color(0xFF1877F2), size: 24),
                           label: const Text(
                             'Facebook',
