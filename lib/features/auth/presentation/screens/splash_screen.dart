@@ -12,10 +12,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigate to login page after 3 seconds
-    Timer(const Duration(seconds: 3), () {
+    // Navigate to auth check after 5 seconds
+    Timer(const Duration(seconds: 5), () {
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/login');
+        Navigator.of(context).pushReplacementNamed('/auth-check');
       }
     });
   }
