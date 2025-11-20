@@ -31,7 +31,7 @@ class FCMService {
       return;
     }
 
-    String? token = await _firebaseMessaging.getToken();
+    await _firebaseMessaging.getToken();
     // TODO: Save token to Firestore for user profile
 
     _firebaseMessaging.onTokenRefresh.listen((newToken) {

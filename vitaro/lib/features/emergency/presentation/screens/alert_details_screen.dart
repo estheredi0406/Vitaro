@@ -7,11 +7,16 @@ import '../widgets/urgency_badge.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../data/repositories/emergency_repository.dart';
 
-class AlertDetailsScreen extends StatelessWidget {
+class AlertDetailsScreen extends StatefulWidget {
   final EmergencyAlertModel alert;
 
   const AlertDetailsScreen({super.key, required this.alert});
 
+  @override
+  State<AlertDetailsScreen> createState() => _AlertDetailsScreenState();
+}
+
+class _AlertDetailsScreenState extends State<AlertDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,10 +39,10 @@ class AlertDetailsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  UrgencyBadge(level: alert.urgencyLevel),
+                  UrgencyBadge(level: widget.alert.urgencyLevel),
                   const SizedBox(height: 12),
                   Text(
-                    alert.hospitalName,
+                    widget.alert.hospitalName,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -54,7 +59,7 @@ class AlertDetailsScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        'Posted ${_formatTime(alert.createdAt)} • ${alert.timeRemaining}',
+                        'Posted ${_formatTime(widget.alert.createdAt)} • ${widget.alert.timeRemaining}',
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.white70,
@@ -77,8 +82,8 @@ class AlertDetailsScreen extends StatelessWidget {
                     icon: Icons.water_drop,
                     iconColor: AppTheme.primaryRed,
                     title: 'Blood Type Required',
-                    value: alert.bloodType,
-                    subtitle: '${alert.unitsNeeded} units needed',
+                    value: widget.alert.bloodType,
+                    subtitle: '${widget.alert.unitsNeeded} units needed',
                   ),
                   const SizedBox(height: 16),
 
@@ -87,9 +92,9 @@ class AlertDetailsScreen extends StatelessWidget {
                     icon: Icons.location_on,
                     iconColor: Colors.blue,
                     title: 'Location',
-                    value: alert.location,
+                    value: widget.alert.location,
                     subtitle: 'Tap to view on map',
-                    onTap: () => _openMap(alert.location),
+                    onTap: () => _openMap(widget.alert.location),
                   ),
                   const SizedBox(height: 16),
 
@@ -98,15 +103,15 @@ class AlertDetailsScreen extends StatelessWidget {
                     icon: Icons.phone,
                     iconColor: Colors.green,
                     title: 'Contact Number',
-                    value: alert.contactNumber,
+                    value: widget.alert.contactNumber,
                     subtitle: 'Tap to call',
-                    onTap: () => _makePhoneCall(alert.contactNumber),
+                    onTap: () => _makePhoneCall(widget.alert.contactNumber),
                   ),
                   const SizedBox(height: 16),
 
                   // Description if available
-                  if (alert.description != null &&
-                      alert.description!.isNotEmpty) ...[
+                    if (widget.alert.description != null &&
+                      widget.alert.description!.isNotEmpty) ...[
                     const Text(
                       'Additional Information',
                       style: TextStyle(
@@ -125,7 +130,7 @@ class AlertDetailsScreen extends StatelessWidget {
                         border: Border.all(color: Colors.grey.shade300),
                       ),
                       child: Text(
-                        alert.description!,
+                        widget.alert.description!,
                         style: const TextStyle(
                           fontSize: 14,
                           color: AppTheme.textDark,
@@ -151,7 +156,7 @@ class AlertDetailsScreen extends StatelessWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            '${alert.respondedDonors.length} donors have responded to this alert',
+                            '${widget.alert.respondedDonors.length} donors have responded to this alert',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.green.shade900,
@@ -197,12 +202,12 @@ class AlertDetailsScreen extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
+                child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: iconColor.withOpacity(0.1),
+                color: iconColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icon, color: iconColor, size: 24),
@@ -289,19 +294,21 @@ class AlertDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _handleResponse(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please login to respond')));
+      messenger.showSnackBar(const SnackBar(content: Text('Please login to respond')));
       return;
     }
 
     final repository = EmergencyRepository();
-    final hasResponded = await repository.hasUserResponded(alert.id, user.uid);
+    final hasResponded = await repository.hasUserResponded(widget.alert.id, user.uid);
 
     if (hasResponded) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      if (!mounted) return;
+      messenger.showSnackBar(
         const SnackBar(
           content: Text('You have already responded to this alert'),
         ),
@@ -309,8 +316,9 @@ class AlertDetailsScreen extends StatelessWidget {
       return;
     }
 
+    if (!mounted) return;
     final confirmed = await showDialog<bool>(
-      context: context,
+      context: navigator.context,
       builder: (context) => AlertDialog(
         title: const Text('Confirm Response'),
         content: const Text(
@@ -318,11 +326,11 @@ class AlertDetailsScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => navigator.pop(false),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => navigator.pop(true),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primaryRed,
             ),
@@ -334,23 +342,23 @@ class AlertDetailsScreen extends StatelessWidget {
 
     if (confirmed == true) {
       final success = await repository.respondToAlert(
-        alert.id,
+        widget.alert.id,
         user.uid,
         userName: '',
         userPhone: '',
         userBloodType: '',
       );
 
-      if (success && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+      if (success && mounted) {
+        messenger.showSnackBar(
           const SnackBar(
             content: Text('Response sent! The hospital will contact you soon.'),
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pop(context);
-      } else if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        navigator.pop();
+      } else if (mounted) {
+        messenger.showSnackBar(
           SnackBar(
             content: const Text('Failed to send response. Please try again.'),
             backgroundColor: AppTheme.primaryRed,

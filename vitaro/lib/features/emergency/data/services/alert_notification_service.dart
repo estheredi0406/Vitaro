@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/foundation.dart';
 import '../models/emergency_alert_model.dart';
 
 class AlertNotificationService {
@@ -20,7 +21,7 @@ class AlertNotificationService {
   Future<void> initialize() async {
     if (_isInitialized) return;
 
-    print(' Initializing Alert Notification Service...');
+    debugPrint('Initializing Alert Notification Service...');
 
     // Initialize local notifications
     await _initializeLocalNotifications();
@@ -32,7 +33,7 @@ class AlertNotificationService {
     _listenForNewAlerts();
 
     _isInitialized = true;
-    print('Alert Notification Service initialized');
+    debugPrint('Alert Notification Service initialized');
   }
 
   // Initialize local notifications
@@ -77,7 +78,7 @@ class AlertNotificationService {
 
   // Listen for new emergency alerts in real-time
   void _listenForNewAlerts() {
-    print(' Listening for new emergency alerts...');
+    debugPrint('Listening for new emergency alerts...');
 
     _firestore
         .collection('emergency_alerts')
@@ -95,9 +96,9 @@ class AlertNotificationService {
             // Check if this is a new alert (created after we started listening)
             if (_lastAlertTime != null &&
                 alert.createdAt.isAfter(_lastAlertTime!)) {
-              print(' NEW ALERT DETECTED!');
-              print('   Hospital: ${alert.hospitalName}');
-              print('   Blood Type: ${alert.bloodType}');
+              debugPrint('NEW ALERT DETECTED!');
+              debugPrint('  Hospital: ${alert.hospitalName}');
+              debugPrint('  Blood Type: ${alert.bloodType}');
 
               // Send notification
               _sendNotification(alert);
@@ -106,14 +107,14 @@ class AlertNotificationService {
             // Update last alert time
             _lastAlertTime = alert.createdAt;
           } catch (e) {
-            print(' Error processing alert: $e');
+            debugPrint('Error processing alert: $e');
           }
         });
   }
 
   // Send local notification for new alert
   Future<void> _sendNotification(EmergencyAlertModel alert) async {
-    print(' Sending notification for new alert...');
+    debugPrint('Sending notification for new alert...');
 
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(

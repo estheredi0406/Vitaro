@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Added for User type
+import 'package:firebase_auth/firebase_auth.dart'; 
 
 // Import the generated firebase options
 import 'package:vitaro/firebase_options.dart';
@@ -22,8 +22,11 @@ import 'package:vitaro/features/donation_history/presentation/bloc/add_donation_
 import 'package:vitaro/features/donation_history/presentation/bloc/donation_history_bloc.dart';
 import 'package:vitaro/features/donation_history/presentation/screens/donation_history_screen.dart';
 
+// *** YOUR FEATURES (Member 2) ***
+import 'package:vitaro/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:vitaro/features/centers/presentation/find_centers_screen.dart';
+
 // Temporary Auth Repository Adapter
-// This bridges Member 1's simple Auth logic with your Clean Architecture requirements
 import 'package:vitaro/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -31,7 +34,6 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<String?> getCurrentUserId() async {
-    // Uses Member 1's actual Firebase Auth service logic
     return _authService.currentUser?.uid;
   }
 }
@@ -52,7 +54,6 @@ class VitaroApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // We keep your MultiRepositoryProvider to ensure Donation History works
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<FirebaseFirestore>(
@@ -89,18 +90,21 @@ class VitaroApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Vitaro',
           debugShowCheckedModeBanner: false,
-          // THEME: Use the AppTheme you or Member 1 defined
-          // theme: AppTheme.lightTheme,
+          // THEME: Use your team's theme if available
+          theme: ThemeData(
+            primarySwatch: Colors.red,
+            useMaterial3: true,
+          ),
 
-          // ROUTING: Merging Member 1's Routes
-          initialRoute: '/auth-check', // Start with the Auth Wrapper
+          // ROUTING
+          initialRoute: '/auth-check',
           routes: {
             '/auth-check': (context) => const AuthWrapper(),
             '/login': (context) => const LoginScreen(),
             '/create-account': (context) => const CreateAccountScreen(),
             '/forgot-password': (context) => const ForgotPasswordScreen(),
-            // When logged in, go to Donation History (or Dashboard when Member 2 merges)
-            '/home': (context) => const DonationHistoryScreen(),
+            // Use MainContainer as the 'home' screen once logged in
+            '/home': (context) => const MainContainer(), 
           },
         ),
       ),
@@ -109,7 +113,6 @@ class VitaroApp extends StatelessWidget {
 }
 
 /// Auth Wrapper (From Member 1's Logic)
-/// Decides whether to show Login or Home
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
@@ -124,11 +127,69 @@ class AuthWrapper extends StatelessWidget {
           return const SplashScreen();
         }
         if (snapshot.hasData && snapshot.data != null) {
-          return const DonationHistoryScreen(); // Or HomeScreen()
+          // User is logged in -> Show YOUR Dashboard/Main Container
+          return const MainContainer(); 
         } else {
+          // User is logged out -> Show Login
           return const LoginScreen();
         }
       },
+    );
+  }
+}
+
+// *** YOUR MAIN CONTAINER (Bottom Nav Logic) ***
+class MainContainer extends StatefulWidget {
+  const MainContainer({super.key});
+
+  @override
+  State<MainContainer> createState() => _MainContainerState();
+}
+
+class _MainContainerState extends State<MainContainer> {
+  int _currentIndex = 0;
+
+  // The list of screens for the bottom navigation
+  final List<Widget> _pages = [
+    const DashboardScreen(),             // Index 0: Your Dashboard
+    const FindCentersScreen(initialIndex: 1), // Index 1: Your Map (defaulting to Map tab)
+    const DonationHistoryScreen(),       // Index 2: Member 5's History
+    const Center(child: Text("Profile")), // Index 3: Placeholder for Profile
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color(0xFFD32F2F), // Vitaro Red
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: 'Map',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+      ),
     );
   }
 }

@@ -67,7 +67,7 @@ class _DonorInfoFormScreenState extends State<DonorInfoFormScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppTheme.secondaryRed.withOpacity(0.3),
+                  color: AppTheme.secondaryRed.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppTheme.secondaryRed),
                 ),
