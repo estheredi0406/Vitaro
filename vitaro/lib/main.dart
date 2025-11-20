@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-// Import the generated firebase options
 import 'package:vitaro/firebase_options.dart';
 
 // --- MEMBER 1: Auth Features ---

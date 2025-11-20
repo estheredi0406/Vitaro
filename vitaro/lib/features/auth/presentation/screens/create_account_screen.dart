@@ -157,7 +157,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               key: _formKey,
               child: Column(
                 children: [
-                  // ... Header and fields kept the same, only logic above changed ...
+                  // Header and fields kept the same, only logic above changed
                   // Keeping UI code concise for response limits, but logic above is the key fix.
                   // Just copy the original UI structure from your file here.
                   const SizedBox(height: 24),

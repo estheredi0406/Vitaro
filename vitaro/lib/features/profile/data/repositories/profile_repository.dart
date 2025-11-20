@@ -18,7 +18,7 @@ class ProfileRepository {
   })  : _firestore = firestore ?? FirebaseFirestore.instance,
         _auth = auth ?? FirebaseAuth.instance;
 
-  // Get current user profile
+  // Get current user profile. 
   Future<UserModel> getUserProfile() async {
     final user = _auth.currentUser;
     if (user == null) throw Exception('User not logged in');
