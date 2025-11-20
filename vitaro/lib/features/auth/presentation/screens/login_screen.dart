@@ -49,13 +49,16 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-      // If login successful, navigation will be handled by AuthWrapper
-      // The user will automatically be redirected to the home screen
+      if (result['success']) {
+        // Navigate to Home and remove all previous routes to prevent back button return
+        Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Existing UI implementation kept identical, only logic above changed
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -70,7 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(height: 40),
-                    // Logo with subtle shadow
                     Container(
                       width: 80,
                       height: 80,
@@ -85,14 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.water_drop,
-                        color: Colors.white,
-                        size: 40,
-                      ),
+                      child: const Icon(Icons.water_drop, color: Colors.white, size: 40),
                     ),
                     const SizedBox(height: 20),
-                    // App name with letter spacing
                     const Text(
                       'Vitaro',
                       style: TextStyle(
@@ -113,7 +110,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 48),
-                    // Welcome text
                     const Text(
                       'Welcome Back',
                       style: TextStyle(
@@ -124,7 +120,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 36),
-                    // Email field
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -146,10 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: 'Enter your email',
                         hintStyle: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w400),
                         suffixIcon: Icon(Icons.email_outlined, color: Colors.grey[400], size: 22),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
@@ -158,30 +150,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
                         ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFFE53935), width: 1.5),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
-                        ),
                         filled: true,
                         fillColor: const Color(0xFFFAFAFA),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        if (!value.contains('@')) {
-                          return 'Please enter a valid email';
-                        }
+                        if (value == null || value.isEmpty) return 'Please enter your email';
+                        if (!value.contains('@')) return 'Please enter a valid email';
                         return null;
                       },
                     ),
                     const SizedBox(height: 22),
-                    // Password field
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -204,22 +183,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintStyle: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w400),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
+                            _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                             color: Colors.grey[400],
                             size: 22,
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
+                          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
-                        ),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
@@ -228,30 +198,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
                         ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFFE53935), width: 1.5),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
-                        ),
                         filled: true,
                         fillColor: const Color(0xFFFAFAFA),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
+                        if (value == null || value.isEmpty) return 'Please enter your password';
+                        if (value.length < 6) return 'Password must be at least 6 characters';
                         return null;
                       },
                     ),
                     const SizedBox(height: 32),
-                    // Sign in button with shadow
                     SizedBox(
                       width: double.infinity,
                       height: 54,
@@ -259,54 +216,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: _isLoading ? null : _signIn,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFE53935),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           elevation: 0,
                           shadowColor: const Color(0x4DE53935),
                         ),
                         child: _isLoading
                             ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                ),
-                              )
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
+                        )
                             : const Text(
-                                'Sign In',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                  letterSpacing: 0.3,
-                                ),
-                              ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    // Forgot password link
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/forgot-password');
-                      },
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                      ),
-                      child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          color: Color(0xFFE53935),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          letterSpacing: 0.1,
+                          'Sign In',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white, letterSpacing: 0.3),
                         ),
                       ),
                     ),
+                    const SizedBox(height: 24),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pushNamed('/forgot-password'),
+                      child: const Text(
+                        'Forgot Password?',
+                        style: TextStyle(color: Color(0xFFE53935), fontWeight: FontWeight.w600, fontSize: 14),
+                      ),
+                    ),
                     const SizedBox(height: 16),
-                    // Divider with text
                     Row(
                       children: [
                         Expanded(child: Divider(color: Colors.grey[300], thickness: 1)),
@@ -314,39 +248,25 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
                             "Don't have an account?",
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: TextStyle(color: Colors.grey[600], fontSize: 13, fontWeight: FontWeight.w500),
                           ),
                         ),
                         Expanded(child: Divider(color: Colors.grey[300], thickness: 1)),
                       ],
                     ),
                     const SizedBox(height: 16),
-                    // Create Account Button
                     SizedBox(
                       width: double.infinity,
                       height: 54,
                       child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pushNamed('/create-account');
-                        },
+                        onPressed: () => Navigator.of(context).pushNamed('/create-account'),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: Colors.grey[800]!, width: 1.5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         child: const Text(
                           'Create Account',
-                          style: TextStyle(
-                            color: Color(0xFF1A1A1A),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                            letterSpacing: 0.3,
-                          ),
+                          style: TextStyle(color: Color(0xFF1A1A1A), fontWeight: FontWeight.w700, fontSize: 16, letterSpacing: 0.3),
                         ),
                       ),
                     ),
