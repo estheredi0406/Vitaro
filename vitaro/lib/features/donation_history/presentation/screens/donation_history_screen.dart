@@ -140,8 +140,8 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.withOpacity(0.08),
+                                        BoxShadow(
+                                          color: Colors.grey.withValues(alpha: 0.08),
                                           blurRadius: 15,
                                           offset: const Offset(0, 5)),
                                     ],
@@ -223,8 +223,8 @@ class _DonationHistoryScreenState extends State<DonationHistoryScreen> {
                             topLeft: Radius.circular(30),
                             topRight: Radius.circular(30)),
                         boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
+                            BoxShadow(
+                              color: Colors.grey.withValues(alpha: 0.1),
                               blurRadius: 20,
                               offset: const Offset(0, -5))
                         ],

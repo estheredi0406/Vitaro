@@ -12,14 +12,14 @@ class AlertCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // DEBUG LOGGING
-    print('🎴 ========== ALERT CARD ==========');
-    print('🎴 Hospital: ${alert.hospitalName}');
-    print('🎴 Blood Type: ${alert.bloodType}');
-    print('🎴 Location: ${alert.location}');
-    print('🎴 Urgency: ${alert.urgencyLevel}');
-    print('🎴 Units: ${alert.unitsNeeded}');
-    print('🎴 respondedDonors: ${alert.respondedDonors}');
-    print('🎴 =================================');
+    debugPrint('🎴 ========== ALERT CARD ==========');
+    debugPrint('🎴 Hospital: ${alert.hospitalName}');
+    debugPrint('🎴 Blood Type: ${alert.bloodType}');
+    debugPrint('🎴 Location: ${alert.location}');
+    debugPrint('🎴 Urgency: ${alert.urgencyLevel}');
+    debugPrint('🎴 Units: ${alert.unitsNeeded}');
+    debugPrint('🎴 respondedDonors: ${alert.respondedDonors}');
+    debugPrint('🎴 =================================');
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),

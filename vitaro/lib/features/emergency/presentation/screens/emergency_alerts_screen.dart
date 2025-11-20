@@ -142,7 +142,7 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
   Widget _buildFilterChips() {
     return Container(
       height: 60,
-      color: AppTheme.secondaryRed.withOpacity(0.2),
+      color: AppTheme.secondaryRed.withValues(alpha: 0.2),
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -174,11 +174,13 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
     final user = FirebaseAuth.instance.currentUser;
     final userId =
         user?.uid ?? 'guest_${DateTime.now().millisecondsSinceEpoch}';
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
 
     final hasResponded = await _repository.hasUserResponded(alert.id, userId);
     if (hasResponded) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           const SnackBar(
             content: Text('You have already responded to this alert'),
             backgroundColor: Colors.orange,
@@ -188,8 +190,7 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
       return;
     }
 
-    final donorInfo = await Navigator.push<Map<String, dynamic>>(
-      context,
+    final donorInfo = await navigator.push<Map<String, dynamic>>(
       MaterialPageRoute(
         builder: (_) => DonorInfoFormScreen(
           alertId: alert.id,
@@ -202,7 +203,7 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
     if (donorInfo == null) return;
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(
           content: Row(
             children: [
@@ -236,7 +237,7 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
     );
 
     if (success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -266,7 +267,7 @@ class _EmergencyAlertsScreenState extends State<EmergencyAlertsScreen> {
         ),
       );
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: const Row(
             children: [
