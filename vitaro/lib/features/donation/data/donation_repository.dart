@@ -6,11 +6,9 @@ import 'package:vitaro/features/donation/domain/entities/donation_request.dart';
 import 'package:vitaro/features/donation/domain/entities/donor_profile.dart';
 
 class DonationRepository {
-  DonationRepository({
-    FirebaseFirestore? firestore,
-    FirebaseAuth? auth,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _auth = auth ?? FirebaseAuth.instance;
+  DonationRepository({FirebaseFirestore? firestore, FirebaseAuth? auth})
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _auth = auth ?? FirebaseAuth.instance;
 
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
@@ -40,7 +38,9 @@ class DonationRepository {
   }
 
   Future<String> createDonationRequest(DonationRequest request) async {
-    final docRef = await _firestore.collection('donations').add(request.toMap());
+    final docRef = await _firestore
+        .collection('donations')
+        .add(request.toMap());
 
     // *** MODIFIED: Changed 'donors' to 'users' ***
     // *** MODIFIED: Changed 'request.userId' to 'request.donorId' ***
@@ -56,7 +56,9 @@ class DonationRepository {
   }
 
   Future<void> updateDonationStatus(String requestId, String status) async {
-    await _firestore.collection('donations').doc(requestId).update({'status': status});
+    await _firestore.collection('donations').doc(requestId).update({
+      'status': status,
+    });
   }
 
   Future<List<DonationRequest>> fetchUpcomingDonations() async {

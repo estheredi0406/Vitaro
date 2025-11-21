@@ -13,11 +13,9 @@ class ProfileRepository {
   final String _cloudName = 'dnpomawqd';
   final String _uploadPreset = 'Vitaro';
 
-  ProfileRepository({
-    FirebaseFirestore? firestore,
-    FirebaseAuth? auth,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _auth = auth ?? FirebaseAuth.instance;
+  ProfileRepository({FirebaseFirestore? firestore, FirebaseAuth? auth})
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _auth = auth ?? FirebaseAuth.instance;
 
   // Get current user profile
   Future<UserModel> getUserProfile() async {
@@ -32,7 +30,9 @@ class ProfileRepository {
         uid: user.uid,
         email: user.email ?? '',
         displayName: user.displayName ?? 'User',
-        username: user.email?.split('@')[0] ?? 'User', // Use email prefix as default username
+        username:
+            user.email?.split('@')[0] ??
+            'User', // Use email prefix as default username
         photoUrl: user.photoURL,
         // bloodType is optional, so we can leave it null or "Not Set"
       );
@@ -56,7 +56,9 @@ class ProfileRepository {
 
   // Upload Image to Cloudinary
   Future<String> uploadImage(File imageFile) async {
-    final url = Uri.parse('https://api.cloudinary.com/v1_1/$_cloudName/image/upload');
+    final url = Uri.parse(
+      'https://api.cloudinary.com/v1_1/$_cloudName/image/upload',
+    );
 
     final request = http.MultipartRequest('POST', url)
       ..fields['upload_preset'] = _uploadPreset

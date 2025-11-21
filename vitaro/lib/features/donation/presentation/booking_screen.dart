@@ -44,8 +44,9 @@ class _BookingView extends StatelessWidget {
         listener: (context, state) {
           if (state.submissionStatus == SubmissionStatus.failure &&
               state.errorMessage.isNotEmpty) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.errorMessage)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage)));
           }
 
           if (state.submissionStatus == SubmissionStatus.success &&
@@ -117,8 +118,13 @@ class _BookingView extends StatelessWidget {
                     icon: Icons.access_time,
                     label: state.selectedTime != null
                         ? timeFormat.format(
-                            DateTime(0, 1, 1, state.selectedTime!.hour,
-                                state.selectedTime!.minute),
+                            DateTime(
+                              0,
+                              1,
+                              1,
+                              state.selectedTime!.hour,
+                              state.selectedTime!.minute,
+                            ),
                           )
                         : 'Choose a time',
                   ),
@@ -127,7 +133,8 @@ class _BookingView extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: state.submissionStatus == SubmissionStatus.submitting
+                    onPressed:
+                        state.submissionStatus == SubmissionStatus.submitting
                         ? null
                         : () {
                             context.read<BookingCubit>().submitBooking();
@@ -143,7 +150,10 @@ class _BookingView extends StatelessWidget {
                         ? const SizedBox(
                             width: 20,
                             height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
                           )
                         : const Text(
                             'Confirm Booking',
@@ -187,9 +197,15 @@ class _CenterSummaryCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(center.name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(
+            center.name,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 8),
-          Text(center.address, style: const TextStyle(color: AppTheme.textLight)),
+          Text(
+            center.address,
+            style: const TextStyle(color: AppTheme.textLight),
+          ),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -230,4 +246,3 @@ class _PickerTile extends StatelessWidget {
     );
   }
 }
-

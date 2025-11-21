@@ -10,9 +10,9 @@ class FindCentersCubit extends Cubit<FindCentersState> {
   FindCentersCubit({
     CentersRepository? repository,
     GeolocatorPlatform? geolocator,
-  })  : _repository = repository ?? CentersRepository(),
-        _geolocator = geolocator ?? GeolocatorPlatform.instance,
-        super(const FindCentersState.initial());
+  }) : _repository = repository ?? CentersRepository(),
+       _geolocator = geolocator ?? GeolocatorPlatform.instance,
+       super(const FindCentersState.initial());
 
   final CentersRepository _repository;
   final GeolocatorPlatform _geolocator;
@@ -29,23 +29,29 @@ class FindCentersCubit extends Cubit<FindCentersState> {
           ? await _repository.fetchNearbyCenters(position)
           : await _repository.fetchCenters();
 
-      emit(state.copyWith(
-        status: FindCentersStatus.loaded,
-        centers: centers,
-        userPosition: position,
-      ));
+      emit(
+        state.copyWith(
+          status: FindCentersStatus.loaded,
+          centers: centers,
+          userPosition: position,
+        ),
+      );
     } on PermissionDeniedException {
       final centers = await _repository.fetchCenters();
-      emit(state.copyWith(
-        status: FindCentersStatus.loaded,
-        centers: centers,
-        errorMessage: 'Location permission denied. Showing all centers.',
-      ));
+      emit(
+        state.copyWith(
+          status: FindCentersStatus.loaded,
+          centers: centers,
+          errorMessage: 'Location permission denied. Showing all centers.',
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        status: FindCentersStatus.error,
-        errorMessage: e.toString(),
-      ));
+      emit(
+        state.copyWith(
+          status: FindCentersStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 
@@ -83,4 +89,3 @@ class PermissionDeniedException implements Exception {
   @override
   String toString() => message;
 }
-

@@ -13,9 +13,9 @@ class EligibilityCubit extends Cubit<EligibilityState> {
     required BloodCenter center,
     DonationRepository? repository,
     EligibilityChecker? checker,
-  })  : _repository = repository ?? DonationRepository(),
-        _checker = checker ?? const EligibilityChecker(),
-        super(EligibilityState.initial(center));
+  }) : _repository = repository ?? DonationRepository(),
+       _checker = checker ?? const EligibilityChecker(),
+       super(EligibilityState.initial(center));
 
   final DonationRepository _repository;
   final EligibilityChecker _checker;
@@ -25,17 +25,20 @@ class EligibilityCubit extends Cubit<EligibilityState> {
     try {
       final profile = await _repository.fetchCurrentDonorProfile();
       final result = _checker.evaluate(profile);
-      emit(state.copyWith(
-        status: EligibilityStatus.success,
-        profile: profile,
-        result: result,
-      ));
+      emit(
+        state.copyWith(
+          status: EligibilityStatus.success,
+          profile: profile,
+          result: result,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        status: EligibilityStatus.failure,
-        errorMessage: e.toString(),
-      ));
+      emit(
+        state.copyWith(
+          status: EligibilityStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 }
-

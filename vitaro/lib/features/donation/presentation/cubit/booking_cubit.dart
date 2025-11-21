@@ -15,9 +15,9 @@ class BookingCubit extends Cubit<BookingState> {
     required BloodCenter center,
     DonationRepository? repository,
     FirebaseAuth? auth,
-  })  : _repository = repository ?? DonationRepository(),
-        _auth = auth ?? FirebaseAuth.instance,
-        super(BookingState.initial(center));
+  }) : _repository = repository ?? DonationRepository(),
+       _auth = auth ?? FirebaseAuth.instance,
+       super(BookingState.initial(center));
 
   final DonationRepository _repository;
   final FirebaseAuth _auth;
@@ -32,20 +32,24 @@ class BookingCubit extends Cubit<BookingState> {
 
   Future<void> submitBooking() async {
     if (state.selectedDate == null || state.selectedTime == null) {
-      emit(state.copyWith(
-        submissionStatus: SubmissionStatus.failure,
-        errorMessage: 'Please select a preferred date and time.',
-      ));
+      emit(
+        state.copyWith(
+          submissionStatus: SubmissionStatus.failure,
+          errorMessage: 'Please select a preferred date and time.',
+        ),
+      );
       emit(state.copyWith(submissionStatus: SubmissionStatus.idle));
       return;
     }
 
     final userId = _auth.currentUser?.uid;
     if (userId == null) {
-      emit(state.copyWith(
-        submissionStatus: SubmissionStatus.failure,
-        errorMessage: 'User not authenticated.',
-      ));
+      emit(
+        state.copyWith(
+          submissionStatus: SubmissionStatus.failure,
+          errorMessage: 'User not authenticated.',
+        ),
+      );
       return;
     }
 
@@ -70,15 +74,19 @@ class BookingCubit extends Cubit<BookingState> {
 
       final requestId = await _repository.createDonationRequest(request);
 
-      emit(state.copyWith(
-        submissionStatus: SubmissionStatus.success,
-        createdRequestId: requestId,
-      ));
+      emit(
+        state.copyWith(
+          submissionStatus: SubmissionStatus.success,
+          createdRequestId: requestId,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        submissionStatus: SubmissionStatus.failure,
-        errorMessage: e.toString(),
-      ));
+      emit(
+        state.copyWith(
+          submissionStatus: SubmissionStatus.failure,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 }

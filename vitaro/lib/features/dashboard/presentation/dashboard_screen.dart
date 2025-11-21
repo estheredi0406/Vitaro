@@ -44,10 +44,7 @@ class _DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const ScreenAppBar(
-        title: 'Vitaro',
-        showBackArrow: false,
-      ),
+      appBar: const ScreenAppBar(title: 'Vitaro', showBackArrow: false),
       body: BlocBuilder<DashboardCubit, DashboardState>(
         builder: (context, state) {
           if (state is DashboardLoading || state is DashboardInitial) {
@@ -55,24 +52,31 @@ class _DashboardView extends StatelessWidget {
           }
           if (state is DashboardError) {
             return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error_outline, color: Colors.red, size: 48),
-                    const SizedBox(height: 16),
-                    Text('Error: ${state.message}', textAlign: TextAlign.center),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                        onPressed: () =>
-                            context.read<DashboardCubit>().fetchDashboardData(),
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.primaryRed),
-                        child: const Text("Retry"))
-                  ],
-                ));
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                  const SizedBox(height: 16),
+                  Text('Error: ${state.message}', textAlign: TextAlign.center),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () =>
+                        context.read<DashboardCubit>().fetchDashboardData(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryRed,
+                    ),
+                    child: const Text("Retry"),
+                  ),
+                ],
+              ),
+            );
           }
           if (state is DashboardLoaded) {
-            return _buildDashboardContent(context, state.user, state.activities);
+            return _buildDashboardContent(
+              context,
+              state.user,
+              state.activities,
+            );
           }
           return const Center(child: Text('Something went wrong.'));
         },
@@ -81,10 +85,10 @@ class _DashboardView extends StatelessWidget {
   }
 
   Widget _buildDashboardContent(
-      BuildContext context,
-      DashboardUser user,
-      List<RecentActivity> activities,
-      ) {
+    BuildContext context,
+    DashboardUser user,
+    List<RecentActivity> activities,
+  ) {
     return RefreshIndicator(
       onRefresh: () => context.read<DashboardCubit>().fetchDashboardData(),
       child: SingleChildScrollView(
@@ -127,7 +131,7 @@ class _DashboardView extends StatelessWidget {
                 InfoCard(
                   title: 'Blood Pressure',
                   value:
-                  '${user.bloodPressureSystolic}/${user.bloodPressureDiastolic}',
+                      '${user.bloodPressureSystolic}/${user.bloodPressureDiastolic}',
                   unit: 'mmHg',
                 ),
                 const SizedBox(width: 12),
@@ -186,7 +190,7 @@ class DashboardMapPreview extends StatelessWidget {
           border: Border.all(color: Colors.grey.shade200),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha:0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -206,16 +210,18 @@ class DashboardMapPreview extends StatelessWidget {
                 myLocationButtonEnabled: false,
                 mapToolbarEnabled: false,
               ),
-              Container(color: Colors.black.withValues(alpha:0.1)),
+              Container(color: Colors.black.withValues(alpha: 0.1)),
               Center(
                 child: Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: const [
-                      BoxShadow(color: Colors.black26, blurRadius: 8)
+                      BoxShadow(color: Colors.black26, blurRadius: 8),
                     ],
                   ),
                   child: Row(
@@ -223,10 +229,13 @@ class DashboardMapPreview extends StatelessWidget {
                     children: const [
                       Icon(Icons.map, color: Colors.red, size: 20),
                       SizedBox(width: 8),
-                      Text("Find Nearby Centers",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87)),
+                      Text(
+                        "Find Nearby Centers",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
                     ],
                   ),
                 ),

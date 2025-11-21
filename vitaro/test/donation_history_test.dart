@@ -30,24 +30,27 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
-  testWidgets('Renders Donation History List correctly',
-      (WidgetTester tester) async {
+  testWidgets('Renders Donation History List correctly', (
+    WidgetTester tester,
+  ) async {
     // --- ARRANGE ---
     final mockBloc = FakeDonationHistoryBloc();
 
     final testDonations = [
       Donation(
-          id: '1',
-          location: 'Kigali Center',
-          amountMl: 450,
-          date: DateTime.now(),
-          status: 'Completed'),
+        id: '1',
+        location: 'Kigali Center',
+        amountMl: 450,
+        date: DateTime.now(),
+        status: 'Completed',
+      ),
       Donation(
-          id: '2',
-          location: 'Butare Clinic',
-          amountMl: 300,
-          date: DateTime.now(),
-          status: 'Processing'),
+        id: '2',
+        location: 'Butare Clinic',
+        amountMl: 300,
+        date: DateTime.now(),
+        status: 'Processing',
+      ),
     ];
 
     mockBloc.addTestState(DonationHistoryLoaded(donations: testDonations));
@@ -68,8 +71,9 @@ void main() {
     expect(find.text('Track'), findsNWidgets(2));
   });
 
-  testWidgets('Renders Empty State when no donations exist',
-      (WidgetTester tester) async {
+  testWidgets('Renders Empty State when no donations exist', (
+    WidgetTester tester,
+  ) async {
     final mockBloc = FakeDonationHistoryBloc();
     mockBloc.addTestState(const DonationHistoryLoaded(donations: []));
 

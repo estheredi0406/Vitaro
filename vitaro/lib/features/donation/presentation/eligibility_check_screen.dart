@@ -97,7 +97,8 @@ class _EligibilityResultBody extends StatelessWidget {
                 if (result.nextEligibleDate != null) ...[
                   const SizedBox(height: 8),
                   Text(
-                      'Next eligible date: ${formatter.format(result.nextEligibleDate!)}'),
+                    'Next eligible date: ${formatter.format(result.nextEligibleDate!)}',
+                  ),
                 ],
               ],
             ),
@@ -122,17 +123,19 @@ class _EligibilityResultBody extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            ...result.reasons.map((reason) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.info_outline, color: Colors.orange),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(reason)),
-                    ],
-                  ),
-                )),
+            ...result.reasons.map(
+              (reason) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.info_outline, color: Colors.orange),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(reason)),
+                  ],
+                ),
+              ),
+            ),
           ],
           const Spacer(),
           CustomButton(
@@ -143,7 +146,9 @@ class _EligibilityResultBody extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (_) => BookingScreen(
-                            center: state.center, profile: profile),
+                          center: state.center,
+                          profile: profile,
+                        ),
                       ),
                     );
                   }
@@ -185,16 +190,20 @@ class _ErrorBody extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline,
-                size: 48, color: AppTheme.primaryRed),
+            const Icon(
+              Icons.error_outline,
+              size: 48,
+              color: AppTheme.primaryRed,
+            ),
             const SizedBox(height: 16),
             Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 16),
             ElevatedButton(
-               // Simple retry button if something goes wrong
-               onPressed: () => context.read<EligibilityCubit>().evaluateEligibility(),
-               child: const Text('Retry'),
-            )
+              // Simple retry button if something goes wrong
+              onPressed: () =>
+                  context.read<EligibilityCubit>().evaluateEligibility(),
+              child: const Text('Retry'),
+            ),
           ],
         ),
       ),

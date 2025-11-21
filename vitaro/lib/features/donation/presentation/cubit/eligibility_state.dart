@@ -47,4 +47,3 @@ class EligibilityState extends Equatable {
   @override
   List<Object?> get props => [center, status, profile, result, errorMessage];
 }
-

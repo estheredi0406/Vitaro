@@ -13,8 +13,10 @@ class DonationRemoteDataSourceImpl implements DonationRemoteDataSource {
 
   @override
   Future<void> addDonation(DonationModel donation, String userId) async {
-    final donationCollection =
-        firestore.collection('users').doc(userId).collection('donations');
+    final donationCollection = firestore
+        .collection('users')
+        .doc(userId)
+        .collection('donations');
 
     await donationCollection.add(donation.toFirestore());
   }

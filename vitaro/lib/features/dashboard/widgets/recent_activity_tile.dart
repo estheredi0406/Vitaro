@@ -17,8 +17,8 @@ class RecentActivityTile extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: isAlert
-            ? Colors.red.withValues(alpha: 0.1)
-            : Colors.green.withValues(alpha: 0.1),
+              ? Colors.red.withValues(alpha: 0.1)
+              : Colors.green.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(

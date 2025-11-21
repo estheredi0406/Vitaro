@@ -50,9 +50,7 @@ class AuthRepositoryImpl implements AuthRepository {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const VitaroApp());
 }
@@ -121,10 +119,7 @@ class VitaroApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Vitaro',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.red,
-            useMaterial3: true,
-          ),
+          theme: ThemeData(primarySwatch: Colors.red, useMaterial3: true),
 
           // ROUTING
           initialRoute: '/auth-check',
@@ -186,10 +181,10 @@ class _MainContainerState extends State<MainContainer> {
 
   // The list of screens for the bottom navigation
   final List<Widget> _pages = [
-    const DashboardScreen(),             // Index 0: Dashboard
+    const DashboardScreen(), // Index 0: Dashboard
     const FindCentersScreen(initialIndex: 1), // Index 1: Map
-    const DonationHistoryScreen(),       // Index 2: History
-    const ProfileScreen(),               // Index 3: Profile
+    const DonationHistoryScreen(), // Index 2: History
+    const ProfileScreen(), // Index 3: Profile
   ];
 
   @override
@@ -211,18 +206,9 @@ class _MainContainerState extends State<MainContainer> {
             icon: Icon(Icons.dashboard),
             label: 'Dashboard',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Map',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );

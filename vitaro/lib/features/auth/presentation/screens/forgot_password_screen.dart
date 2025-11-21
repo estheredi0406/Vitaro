@@ -64,16 +64,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               // Red header section with gradient feel
               Container(
                 width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE53935),
-                ),
+                decoration: const BoxDecoration(color: Color(0xFFE53935)),
                 child: Column(
                   children: [
                     // Back button
                     Align(
                       alignment: Alignment.centerLeft,
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                        icon: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                          size: 24,
+                        ),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                     ),
@@ -188,34 +190,62 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
                         decoration: InputDecoration(
                           hintText: 'Enter your email address',
-                          hintStyle: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w400),
-                          suffixIcon: Icon(Icons.email_outlined, color: Colors.grey[400], size: 22),
+                          hintStyle: TextStyle(
+                            color: Colors.grey[400],
+                            fontWeight: FontWeight.w400,
+                          ),
+                          suffixIcon: Icon(
+                            Icons.email_outlined,
+                            color: Colors.grey[400],
+                            size: 22,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1.5,
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
+                            borderSide: BorderSide(
+                              color: Colors.grey[300]!,
+                              width: 1.5,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFE53935),
+                              width: 2,
+                            ),
                           ),
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFFE53935), width: 1.5),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFE53935),
+                              width: 1.5,
+                            ),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFE53935),
+                              width: 2,
+                            ),
                           ),
                           filled: true,
                           fillColor: const Color(0xFFFAFAFA),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 16,
+                          ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -248,7 +278,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2.5,
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
+                                      Colors.white,
+                                    ),
                                   ),
                                 )
                               : const Text(
@@ -319,7 +350,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                      'Support contact: support@vitaro.com'),
+                                    'Support contact: support@vitaro.com',
+                                  ),
                                 ),
                               );
                             },

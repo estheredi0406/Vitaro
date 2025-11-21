@@ -22,8 +22,10 @@ class DonationTrackingScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Donation Status',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Donation Status',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -34,20 +36,27 @@ class DonationTrackingScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Location: ${donation.location}",
-                style: const TextStyle(fontSize: 16, color: Colors.grey)),
+            Text(
+              "Location: ${donation.location}",
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
+            ),
             const SizedBox(height: 20),
-            Text("Steps $currentStepIndex/5",
-                style: const TextStyle(
-                    color: Color(0xFFD32F2F), fontWeight: FontWeight.bold)),
+            Text(
+              "Steps $currentStepIndex/5",
+              style: const TextStyle(
+                color: Color(0xFFD32F2F),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 10),
 
             // Dynamic Progress Bar
             LinearProgressIndicator(
               value: currentStepIndex / 5,
               backgroundColor: Colors.red[50],
-              valueColor:
-                  const AlwaysStoppedAnimation<Color>(Color(0xFFD32F2F)),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFFD32F2F),
+              ),
               minHeight: 8,
               borderRadius: BorderRadius.circular(10),
             ),
@@ -113,19 +122,24 @@ class DonationTrackingScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: Colors.white,
                   border: Border.all(
-                      color: isActive ? vitaroRed : Colors.grey.shade300,
-                      width: 2),
+                    color: isActive ? vitaroRed : Colors.grey.shade300,
+                    width: 2,
+                  ),
                 ),
-                child: Icon(isActive ? Icons.check : icon,
-                    size: 20, color: isActive ? vitaroRed : Colors.grey),
+                child: Icon(
+                  isActive ? Icons.check : icon,
+                  size: 20,
+                  color: isActive ? vitaroRed : Colors.grey,
+                ),
               ),
               if (!isLast)
                 Expanded(
                   child: Container(
-                      width: 2,
-                      color: isActive
-                          ? vitaroRed.withValues(alpha: 0.5)
-                          : Colors.grey.shade200),
+                    width: 2,
+                    color: isActive
+                        ? vitaroRed.withValues(alpha: 0.5)
+                        : Colors.grey.shade200,
+                  ),
                 ),
             ],
           ),
@@ -136,16 +150,22 @@ class DonationTrackingScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: isActive ? Colors.black : Colors.grey)),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: isActive ? Colors.black : Colors.grey,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(subtitle,
-                      style: TextStyle(
-                          color: isActive ? vitaroRed : Colors.grey,
-                          fontSize: 14)),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: isActive ? vitaroRed : Colors.grey,
+                      fontSize: 14,
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -49,12 +49,11 @@ class BookingState extends Equatable {
 
   @override
   List<Object?> get props => [
-        center,
-        selectedDate,
-        selectedTime,
-        submissionStatus,
-        errorMessage,
-        createdRequestId,
-      ];
+    center,
+    selectedDate,
+    selectedTime,
+    submissionStatus,
+    errorMessage,
+    createdRequestId,
+  ];
 }
-

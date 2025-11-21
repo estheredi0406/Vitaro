@@ -35,29 +35,33 @@ class DashboardUser extends Equatable {
       name: data['name'] ?? 'John Doe',
       bloodType: data['bloodType'] ?? 'O+',
       isEligible: data['isEligible'] ?? false,
-      nextEligibilityDate: (data['nextEligibilityDate'] as Timestamp?)?.toDate(),
+      nextEligibilityDate: (data['nextEligibilityDate'] as Timestamp?)
+          ?.toDate(),
       hemoglobin: (data['hemoglobin'] as num?)?.toDouble() ?? 14.0,
-      bloodPressureSystolic: (data['bloodPressureSystolic'] as num?)?.toInt() ?? 120,
-      bloodPressureDiastolic: (data['bloodPressureDiastolic'] as num?)?.toInt() ?? 80,
+      bloodPressureSystolic:
+          (data['bloodPressureSystolic'] as num?)?.toInt() ?? 120,
+      bloodPressureDiastolic:
+          (data['bloodPressureDiastolic'] as num?)?.toInt() ?? 80,
       pulse: (data['pulse'] as num?)?.toInt() ?? 72,
       profileImageUrl: data['profileImageUrl'] ?? '',
     );
   }
 
   // Helper for displaying blood pressure
-  String get bloodPressureDisplay => '$bloodPressureSystolic/$bloodPressureDiastolic';
+  String get bloodPressureDisplay =>
+      '$bloodPressureSystolic/$bloodPressureDiastolic';
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        bloodType,
-        isEligible,
-        nextEligibilityDate,
-        hemoglobin,
-        bloodPressureSystolic,
-        bloodPressureDiastolic,
-        pulse,
-        profileImageUrl,
-      ];
+    id,
+    name,
+    bloodType,
+    isEligible,
+    nextEligibilityDate,
+    hemoglobin,
+    bloodPressureSystolic,
+    bloodPressureDiastolic,
+    pulse,
+    profileImageUrl,
+  ];
 }

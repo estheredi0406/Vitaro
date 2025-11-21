@@ -51,7 +51,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (result['success']) {
         // Navigate to Home and remove all previous routes to prevent back button return
-        Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil('/home', (route) => false);
       }
     }
   }
@@ -87,7 +89,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                      child: const Icon(Icons.water_drop, color: Colors.white, size: 40),
+                      child: const Icon(
+                        Icons.water_drop,
+                        color: Colors.white,
+                        size: 40,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     const Text(
@@ -136,27 +142,50 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
                       decoration: InputDecoration(
                         hintText: 'Enter your email',
-                        hintStyle: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w400),
-                        suffixIcon: Icon(Icons.email_outlined, color: Colors.grey[400], size: 22),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        hintStyle: TextStyle(
+                          color: Colors.grey[400],
+                          fontWeight: FontWeight.w400,
+                        ),
+                        suffixIcon: Icon(
+                          Icons.email_outlined,
+                          color: Colors.grey[400],
+                          size: 22,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
+                          borderSide: BorderSide(
+                            color: Colors.grey[300]!,
+                            width: 1.5,
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFE53935),
+                            width: 2,
+                          ),
                         ),
                         filled: true,
                         fillColor: const Color(0xFFFAFAFA),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 16,
+                        ),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Please enter your email';
-                        if (!value.contains('@')) return 'Please enter a valid email';
+                        if (value == null || value.isEmpty)
+                          return 'Please enter your email';
+                        if (!value.contains('@'))
+                          return 'Please enter a valid email';
                         return null;
                       },
                     ),
@@ -177,34 +206,57 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
                       decoration: InputDecoration(
                         hintText: 'Enter your password',
-                        hintStyle: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w400),
+                        hintStyle: TextStyle(
+                          color: Colors.grey[400],
+                          fontWeight: FontWeight.w400,
+                        ),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                            _obscurePassword
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
                             color: Colors.grey[400],
                             size: 22,
                           ),
-                          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                          onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword,
+                          ),
                         ),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
+                          borderSide: BorderSide(
+                            color: Colors.grey[300]!,
+                            width: 1.5,
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFFE53935), width: 2),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFE53935),
+                            width: 2,
+                          ),
                         ),
                         filled: true,
                         fillColor: const Color(0xFFFAFAFA),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 16,
+                        ),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Please enter your password';
-                        if (value.length < 6) return 'Password must be at least 6 characters';
+                        if (value == null || value.isEmpty)
+                          return 'Please enter your password';
+                        if (value.length < 6)
+                          return 'Password must be at least 6 characters';
                         return null;
                       },
                     ),
@@ -216,42 +268,65 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: _isLoading ? null : _signIn,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFE53935),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           elevation: 0,
                           shadowColor: const Color(0x4DE53935),
                         ),
                         child: _isLoading
                             ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
-                        )
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
+                                ),
+                              )
                             : const Text(
-                          'Sign In',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white, letterSpacing: 0.3),
-                        ),
+                                'Sign In',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 24),
                     TextButton(
-                      onPressed: () => Navigator.of(context).pushNamed('/forgot-password'),
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/forgot-password'),
                       child: const Text(
                         'Forgot Password?',
-                        style: TextStyle(color: Color(0xFFE53935), fontWeight: FontWeight.w600, fontSize: 14),
+                        style: TextStyle(
+                          color: Color(0xFFE53935),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        Expanded(child: Divider(color: Colors.grey[300], thickness: 1)),
+                        Expanded(
+                          child: Divider(color: Colors.grey[300], thickness: 1),
+                        ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
                             "Don't have an account?",
-                            style: TextStyle(color: Colors.grey[600], fontSize: 13, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
-                        Expanded(child: Divider(color: Colors.grey[300], thickness: 1)),
+                        Expanded(
+                          child: Divider(color: Colors.grey[300], thickness: 1),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -259,14 +334,25 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       height: 54,
                       child: OutlinedButton(
-                        onPressed: () => Navigator.of(context).pushNamed('/create-account'),
+                        onPressed: () =>
+                            Navigator.of(context).pushNamed('/create-account'),
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.grey[800]!, width: 1.5),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          side: BorderSide(
+                            color: Colors.grey[800]!,
+                            width: 1.5,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                         child: const Text(
                           'Create Account',
-                          style: TextStyle(color: Color(0xFF1A1A1A), fontWeight: FontWeight.w700, fontSize: 16, letterSpacing: 0.3),
+                          style: TextStyle(
+                            color: Color(0xFF1A1A1A),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            letterSpacing: 0.3,
+                          ),
                         ),
                       ),
                     ),

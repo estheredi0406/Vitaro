@@ -39,16 +39,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
             : null,
         suffixIcon: widget.isPassword
             ? IconButton(
-          icon: Icon(
-            _isObscured ? Icons.visibility_off : Icons.visibility,
-            color: AppTheme.textLight,
-          ),
-          onPressed: () {
-            setState(() {
-              _isObscured = !_isObscured;
-            });
-          },
-        )
+                icon: Icon(
+                  _isObscured ? Icons.visibility_off : Icons.visibility,
+                  color: AppTheme.textLight,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isObscured = !_isObscured;
+                  });
+                },
+              )
             : null,
       ),
       // We will add validation logic here later
@@ -57,7 +57,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
           return '${widget.hintText} cannot be empty';
         }
         // Add more specific validation (e.g., email format)
-        if (widget.hintText.toLowerCase().contains('email') && !value.contains('@')) {
+        if (widget.hintText.toLowerCase().contains('email') &&
+            !value.contains('@')) {
           return 'Please enter a valid email';
         }
         return null;

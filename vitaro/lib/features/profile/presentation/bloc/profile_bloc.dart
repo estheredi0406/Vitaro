@@ -26,6 +26,7 @@ abstract class ProfileState extends Equatable {
 }
 
 class ProfileInitial extends ProfileState {}
+
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
@@ -53,7 +54,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UpdateProfile>(_onUpdateProfile);
   }
 
-  Future<void> _onLoadProfile(LoadProfile event, Emitter<ProfileState> emit) async {
+  Future<void> _onLoadProfile(
+    LoadProfile event,
+    Emitter<ProfileState> emit,
+  ) async {
     emit(ProfileLoading());
     try {
       final user = await _repository.getUserProfile();
@@ -63,7 +67,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  Future<void> _onUpdateProfile(UpdateProfile event, Emitter<ProfileState> emit) async {
+  Future<void> _onUpdateProfile(
+    UpdateProfile event,
+    Emitter<ProfileState> emit,
+  ) async {
     emit(ProfileLoading());
     try {
       UserModel updatedUser = event.user;

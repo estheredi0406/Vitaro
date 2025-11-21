@@ -34,7 +34,9 @@ class DonationRequest extends Equatable {
     );
   }
 
-  factory DonationRequest.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+  factory DonationRequest.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data() ?? <String, dynamic>{};
     return DonationRequest(
       id: doc.id,
@@ -64,7 +66,9 @@ class DonationRequest extends Equatable {
       'centerId': centerId,
       'centerName': centerName,
       'scheduledAt': Timestamp.fromDate(scheduledAt),
-      'donationDate': Timestamp.fromDate(scheduledAt), // This field is also in your code
+      'donationDate': Timestamp.fromDate(
+        scheduledAt,
+      ), // This field is also in your code
       'status': status,
       'createdAt': Timestamp.fromDate(createdAt),
     };
@@ -72,13 +76,13 @@ class DonationRequest extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        // *** MODIFIED: Renamed to match team rules ***
-        donorId,
-        centerId,
-        centerName,
-        scheduledAt,
-        status,
-        createdAt,
-      ];
+    id,
+    // *** MODIFIED: Renamed to match team rules ***
+    donorId,
+    centerId,
+    centerName,
+    scheduledAt,
+    status,
+    createdAt,
+  ];
 }

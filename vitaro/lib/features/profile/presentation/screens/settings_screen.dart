@@ -17,7 +17,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Settings',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -32,7 +35,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             const Text(
               "Preferences",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
             ),
             const SizedBox(height: 10),
 
@@ -40,8 +47,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SwitchListTile(
               activeThumbColor: const Color(0xFFE53935),
               contentPadding: EdgeInsets.zero,
-              title: const Text("Notification Reminders", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-              subtitle: const Text("Receive alerts when blood is needed nearby", style: TextStyle(fontSize: 12, color: Colors.grey)),
+              title: const Text(
+                "Notification Reminders",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              subtitle: const Text(
+                "Receive alerts when blood is needed nearby",
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
               value: _notificationsEnabled,
               onChanged: (bool value) {
                 setState(() {
@@ -55,8 +68,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             SwitchListTile(
               activeThumbColor: const Color(0xFFE53935),
               contentPadding: EdgeInsets.zero,
-              title: const Text("Email Updates", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-              subtitle: const Text("Receive newsletters and campaign updates", style: TextStyle(fontSize: 12, color: Colors.grey)),
+              title: const Text(
+                "Email Updates",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              subtitle: const Text(
+                "Receive newsletters and campaign updates",
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
               value: _emailUpdatesEnabled,
               onChanged: (bool value) {
                 setState(() {
