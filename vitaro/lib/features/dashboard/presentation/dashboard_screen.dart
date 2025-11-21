@@ -7,6 +7,9 @@ import 'package:vitaro/core/theme/app_theme.dart';
 import 'package:vitaro/features/dashboard/controllers/dashboard_cubit.dart';
 import 'package:vitaro/features/dashboard/controllers/dashboard_state.dart';
 
+// Profile Bloc (Added to fetch real blood type)
+import 'package:vitaro/features/profile/presentation/bloc/profile_bloc.dart';
+
 // Models
 import 'package:vitaro/features/dashboard/models/dashboard_user.dart';
 import 'package:vitaro/features/dashboard/models/recent_activity.dart';
@@ -53,20 +56,20 @@ class _DashboardView extends StatelessWidget {
           if (state is DashboardError) {
             return Center(
                 child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, color: Colors.red, size: 48),
-                const SizedBox(height: 16),
-                Text('Error: ${state.message}', textAlign: TextAlign.center),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                    onPressed: () =>
-                        context.read<DashboardCubit>().fetchDashboardData(),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryRed),
-                    child: const Text("Retry"))
-              ],
-            ));
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                    const SizedBox(height: 16),
+                    Text('Error: ${state.message}', textAlign: TextAlign.center),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                        onPressed: () =>
+                            context.read<DashboardCubit>().fetchDashboardData(),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.primaryRed),
+                        child: const Text("Retry"))
+                  ],
+                ));
           }
           if (state is DashboardLoaded) {
             return _buildDashboardContent(context, state.user, state.activities);
@@ -78,10 +81,10 @@ class _DashboardView extends StatelessWidget {
   }
 
   Widget _buildDashboardContent(
-    BuildContext context,
-    DashboardUser user,
-    List<RecentActivity> activities,
-  ) {
+      BuildContext context,
+      DashboardUser user,
+      List<RecentActivity> activities,
+      ) {
     return RefreshIndicator(
       onRefresh: () => context.read<DashboardCubit>().fetchDashboardData(),
       child: SingleChildScrollView(
@@ -90,7 +93,28 @@ class _DashboardView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BloodTypeCard(user: user),
+            // MODIFIED: Use ProfileBloc to get the real blood type
+            BlocBuilder<ProfileBloc, ProfileState>(
+              builder: (context, profileState) {
+                String displayType = "Not Set"; // Default fallback
+
+                if (profileState is ProfileLoaded) {
+                  // Check if the user has set a blood type in their profile
+                  if (profileState.user.bloodType != null &&
+                      profileState.user.bloodType!.isNotEmpty) {
+                    displayType = profileState.user.bloodType!;
+                  }
+                } else {
+                  // Ensure profile data is loaded if it isn't already
+                  context.read<ProfileBloc>().add(LoadProfile());
+                }
+
+                return BloodTypeCard(
+                  user: user,
+                  bloodTypeOverride: displayType, // Inject the real value
+                );
+              },
+            ),
             const SizedBox(height: 24),
             Row(
               children: [
@@ -103,7 +127,7 @@ class _DashboardView extends StatelessWidget {
                 InfoCard(
                   title: 'Blood Pressure',
                   value:
-                      '${user.bloodPressureSystolic}/${user.bloodPressureDiastolic}',
+                  '${user.bloodPressureSystolic}/${user.bloodPressureDiastolic}',
                   unit: 'mmHg',
                 ),
                 const SizedBox(width: 12),
@@ -162,7 +186,7 @@ class DashboardMapPreview extends StatelessWidget {
           border: Border.all(color: Colors.grey.shade200),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withValues(alpha:0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -182,11 +206,11 @@ class DashboardMapPreview extends StatelessWidget {
                 myLocationButtonEnabled: false,
                 mapToolbarEnabled: false,
               ),
-              Container(color: Colors.black.withValues(alpha: 0.1)),
+              Container(color: Colors.black.withValues(alpha:0.1)),
               Center(
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),

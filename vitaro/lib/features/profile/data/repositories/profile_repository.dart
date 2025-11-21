@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:vitaro/core/models/user_model.dart';
+import 'package:vitaro/core/models/user_model.dart'; // Ensure this points to your core user model
 
 class ProfileRepository {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
 
+  // Keep your keys as requested (ensure you secure these in production!)
   final String _cloudName = 'dnpomawqd';
   final String _uploadPreset = 'Vitaro';
 
@@ -18,19 +19,22 @@ class ProfileRepository {
   })  : _firestore = firestore ?? FirebaseFirestore.instance,
         _auth = auth ?? FirebaseAuth.instance;
 
-  // Get current user profile. 
+  // Get current user profile
   Future<UserModel> getUserProfile() async {
     final user = _auth.currentUser;
     if (user == null) throw Exception('User not logged in');
 
     final doc = await _firestore.collection('users').doc(user.uid).get();
     if (!doc.exists) {
-      // If doc doesn't exist (rare), create a basic one from Auth data
+      // Fallback creation if document doesn't exist
+      // FIX: Added 'username' field which is now required in UserModel
       return UserModel(
         uid: user.uid,
         email: user.email ?? '',
         displayName: user.displayName ?? 'User',
+        username: user.email?.split('@')[0] ?? 'User', // Use email prefix as default username
         photoUrl: user.photoURL,
+        // bloodType is optional, so we can leave it null or "Not Set"
       );
     }
     return UserModel.fromFirestore(doc);

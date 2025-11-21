@@ -2,6 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vitaro/features/profile/presentation/bloc/profile_bloc.dart';
+// Import your settings screen
+import 'package:vitaro/features/profile/presentation/screens/settings_screen.dart';
+// Import donation history to navigate there directly
+import 'package:vitaro/features/donation_history/presentation/screens/donation_history_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -14,6 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    // Reload profile every time we enter to get fresh data
     context.read<ProfileBloc>().add(LoadProfile());
   }
 
@@ -26,10 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+        // Removed back button if this is a main tab, add it back if it's a pushed screen
+        automaticallyImplyLeading: false,
       ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -64,13 +67,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  // Full Name
                   Text(
                     user.displayName,
                     style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
+                  // Username (Updated from Email)
                   Text(
-                    user.email,
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                    "@${user.username}", // Added @ symbol for style
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600], fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 24),
 
@@ -90,13 +95,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 32),
 
-                  // Options List
-                  _buildOptionTile(Icons.favorite_border, 'Your Donations', () {}),
-                  _buildOptionTile(Icons.history, 'History', () {}),
-                  _buildOptionTile(Icons.settings_outlined, 'Settings', () {}),
+                  // Merged Donation History Option
+                  _buildOptionTile(Icons.history, 'Donation History', () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const DonationHistoryScreen())
+                    );
+                  }),
+
+                  // Settings Option
+                  _buildOptionTile(Icons.settings_outlined, 'Settings', () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SettingsScreen())
+                    );
+                  }),
+
                   _buildOptionTile(Icons.help_outline, 'Help & Support', () {}),
+
                   _buildOptionTile(Icons.logout, 'Logout', () {
-                    // Add logout logic here
                     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                   }, isDestructive: true),
                 ],

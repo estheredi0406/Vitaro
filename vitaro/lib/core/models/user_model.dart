@@ -4,15 +4,17 @@ class UserModel {
   final String uid;
   final String email;
   final String displayName;
+  final String username; // Added
   final String? photoUrl;
   final String? phoneNumber;
-  final String? bloodType;
+  final String? bloodType; // Added
   final bool isDonor;
 
   UserModel({
     required this.uid,
     required this.email,
     required this.displayName,
+    required this.username,
     this.photoUrl,
     this.phoneNumber,
     this.bloodType,
@@ -22,7 +24,7 @@ class UserModel {
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>? ?? {};
 
-    // Handle difference between Google Auth (displayName) and Form Auth (firstName + lastName)
+    // Handle Name
     String name = data['displayName'] ?? '';
     if (name.isEmpty) {
       final first = data['firstName'] ?? '';
@@ -34,7 +36,9 @@ class UserModel {
       uid: doc.id,
       email: data['email'] ?? '',
       displayName: name,
-      photoUrl: data['photoURL'] ?? data['profileImageUrl'], // Handle both naming conventions
+      // Fallback to email prefix if username is missing (e.g. Google Auth users)
+      username: data['username'] ?? (data['email']?.split('@')[0] ?? 'User'),
+      photoUrl: data['photoURL'] ?? data['profileImageUrl'],
       phoneNumber: data['phoneNumber'],
       bloodType: data['bloodType'],
       isDonor: data['isDonor'] ?? false,
@@ -45,6 +49,7 @@ class UserModel {
     return {
       'email': email,
       'displayName': displayName,
+      'username': username, // Save username
       'photoURL': photoUrl,
       'phoneNumber': phoneNumber,
       'bloodType': bloodType,
@@ -55,6 +60,7 @@ class UserModel {
 
   UserModel copyWith({
     String? displayName,
+    String? username,
     String? photoUrl,
     String? phoneNumber,
     String? bloodType,
@@ -64,6 +70,7 @@ class UserModel {
       uid: uid,
       email: email,
       displayName: displayName ?? this.displayName,
+      username: username ?? this.username,
       photoUrl: photoUrl ?? this.photoUrl,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       bloodType: bloodType ?? this.bloodType,
