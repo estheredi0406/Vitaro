@@ -89,12 +89,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     } on FirebaseAuthException catch (e) {
       // ... Error handling logic kept same ...
       String message = 'An error occurred';
-      if (e.code == 'weak-password')
+      if (e.code == 'weak-password') {
         message = 'The password provided is too weak.';
-      else if (e.code == 'email-already-in-use')
+      } else if (e.code == 'email-already-in-use') {
         message = 'An account already exists for that email.';
-      else if (e.code == 'invalid-email')
+      } else if (e.code == 'invalid-email') {
         message = 'Invalid email address.';
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(
@@ -284,11 +285,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _passwordController,
-                    obscureText: true,
+                    obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       labelText: 'Password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                       ),
                     ),
                     validator: (v) => v!.length < 6 ? 'Weak Password' : null,
@@ -296,11 +303,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _confirmPasswordController,
-                    obscureText: true,
+                    obscureText: _obscureConfirmPassword,
                     decoration: InputDecoration(
                       labelText: 'Confirm Password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
                       ),
                     ),
                     validator: (v) =>
