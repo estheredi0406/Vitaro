@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:vitaro/core/services/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_event.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_state.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -18,8 +19,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _authService = AuthService();
-  bool _isLoading = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _acceptedTerms = false;
@@ -35,7 +34,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     super.dispose();
   }
 
-  Future<void> _createAccount() async {
+  void _createAccount() {
     if (!_formKey.currentState!.validate()) return;
 
     if (!_acceptedTerms) {
@@ -49,121 +48,41 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       return;
     }
 
-    setState(() => _isLoading = true);
-
-    try {
-      // Create user
-      final userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: _emailController.text.trim(),
-            password: _passwordController.text,
-          );
-
-      // Update display name
-      final fullName =
-          '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}';
-      await userCredential.user?.updateDisplayName(fullName);
-
-      // Save to Firestore
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .set({
-            'firstName': _firstNameController.text.trim(),
-            'lastName': _lastNameController.text.trim(),
-            'displayName': fullName, // Added for consistency with Google Auth
-            'username': _usernameController.text.trim(),
-            'email': _emailController.text.trim(),
-            'createdAt': FieldValue.serverTimestamp(),
-          });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created successfully!')),
-        );
-        // Redirect to Home (User is already signed in by createUserWithEmailAndPassword)
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil('/home', (route) => false);
-      }
-    } on FirebaseAuthException catch (e) {
-      // ... Error handling logic kept same ...
-      String message = 'An error occurred';
-      if (e.code == 'weak-password') {
-        message = 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        message = 'An account already exists for that email.';
-      } else if (e.code == 'invalid-email') {
-        message = 'Invalid email address.';
-      }
-
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(message)));
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+    context.read<AuthBloc>().add(
+      AuthSignUpRequested(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        firstName: _firstNameController.text.trim(),
+        lastName: _lastNameController.text.trim(),
+        username: _usernameController.text.trim(),
+      ),
+    );
   }
 
-  Future<void> _handleSocialSignIn(
-    Future<Map<String, dynamic>> Function() signInMethod,
-  ) async {
-    setState(() => _isLoading = true);
-
-    final result = await signInMethod();
-
-    setState(() => _isLoading = false);
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result['message']),
-          backgroundColor: result['success'] ? Colors.green : Colors.red,
-        ),
-      );
-
-      if (result['success']) {
-        final user = _authService.currentUser;
-        if (user != null) {
-          final userDoc = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
-
-          if (!userDoc.exists) {
-            await FirebaseFirestore.instance
-                .collection('users')
-                .doc(user.uid)
-                .set({
-                  'email': user.email,
-                  'displayName': user.displayName,
-                  'photoURL': user.photoURL,
-                  'createdAt': FieldValue.serverTimestamp(),
-                });
-          }
-        }
-        // Navigate to Home
-        if (mounted) {
-          Navigator.of(
-            context,
-          ).pushNamedAndRemoveUntil('/home', (route) => false);
-        }
-      }
-    }
+  void _handleGoogleSignIn() {
+    context.read<AuthBloc>().add(AuthGoogleSignInRequested());
   }
 
-  // ... Build method below is mostly standard UI code ...
+  void _handleFacebookSignIn() {
+    context.read<AuthBloc>().add(AuthFacebookSignInRequested());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.error && state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state.status == AuthStatus.loading;
+        return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -334,11 +253,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: _isLoading ? null : _createAccount,
+                      onPressed: isLoading ? null : _createAccount,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                       ),
-                      child: _isLoading
+                      child: isLoading
                           ? const CircularProgressIndicator()
                           : const Text('Create Account'),
                     ),
@@ -350,9 +269,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         child: OutlinedButton.icon(
                           icon: const Icon(Icons.g_mobiledata),
                           label: const Text('Google'),
-                          onPressed: () => _handleSocialSignIn(
-                            _authService.signInWithGoogle,
-                          ),
+                          onPressed: isLoading ? null : _handleGoogleSignIn,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -360,9 +277,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         child: OutlinedButton.icon(
                           icon: const Icon(Icons.facebook),
                           label: const Text('Facebook'),
-                          onPressed: () => _handleSocialSignIn(
-                            _authService.signInWithFacebook,
-                          ),
+                          onPressed: isLoading ? null : _handleFacebookSignIn,
                         ),
                       ),
                     ],
@@ -378,6 +293,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           ),
         ),
       ),
+        );
+      },
     );
   }
 }

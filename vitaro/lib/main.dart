@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:vitaro/firebase_options.dart';
 
@@ -13,6 +12,9 @@ import 'package:vitaro/features/auth/presentation/screens/login_screen.dart';
 import 'package:vitaro/features/auth/presentation/screens/create_account_screen.dart';
 import 'package:vitaro/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:vitaro/features/auth/domain/repositories/auth_repository.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_state.dart' show AuthState, AuthStatus;
+import 'package:vitaro/features/auth/presentation/bloc/auth_event.dart';
 
 // --- MEMBER 2: Dashboard & Centers Features ---
 import 'package:vitaro/features/dashboard/presentation/dashboard_screen.dart';
@@ -30,6 +32,7 @@ import 'package:vitaro/features/donation_history/presentation/screens/donation_h
 // Corrected Import: Pointing to Data Repository directly as no Domain layer exists
 import 'package:vitaro/features/emergency/data/repositories/emergency_repository.dart';
 import 'package:vitaro/features/emergency/presentation/screens/emergency_alerts_screen.dart';
+import 'package:vitaro/features/emergency/data/services/fcm_service.dart';
 
 // --- MEMBER 5: Profile Features ---
 import 'package:vitaro/features/profile/data/repositories/profile_repository.dart';
@@ -47,10 +50,16 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize FCM Service
+  FCMService.setNavigatorKey(navigatorKey);
+  await FCMService().initialize();
 
   runApp(const VitaroApp());
 }
@@ -96,6 +105,11 @@ class VitaroApp extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
+          // --- Auth BLoC ---
+          BlocProvider<AuthBloc>(
+            create: (context) => AuthBloc()..add(AuthCheckRequested()),
+          ),
+
           // --- Donation BLoCs ---
           BlocProvider<AddDonationBloc>(
             create: (context) => AddDonationBloc(
@@ -119,6 +133,7 @@ class VitaroApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Vitaro',
           debugShowCheckedModeBanner: false,
+          navigatorKey: navigatorKey,
           theme: ThemeData(primarySwatch: Colors.red, useMaterial3: true),
 
           // ROUTING
@@ -135,6 +150,7 @@ class VitaroApp extends StatelessWidget {
             // Feature Routes
             '/edit-profile': (context) => const EditProfileScreen(),
             '/emergency': (context) => const EmergencyAlertsScreen(),
+            '/emergency-alerts': (context) => const EmergencyAlertsScreen(),
           },
         ),
       ),
@@ -148,20 +164,17 @@ class AuthWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService();
-
-    return StreamBuilder<User?>(
-      stream: authService.authStateChanges,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SplashScreen();
-        }
-        if (snapshot.hasData && snapshot.data != null) {
-          // User is logged in -> Show Main Container
-          return const MainContainer();
-        } else {
-          // User is logged out -> Show Login
-          return const LoginScreen();
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        switch (state.status) {
+          case AuthStatus.initial:
+          case AuthStatus.loading:
+            return const SplashScreen();
+          case AuthStatus.authenticated:
+            return const MainContainer();
+          case AuthStatus.unauthenticated:
+          case AuthStatus.error:
+            return const LoginScreen();
         }
       },
     );

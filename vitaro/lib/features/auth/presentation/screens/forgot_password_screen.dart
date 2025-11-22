@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vitaro/core/services/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_event.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_state.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -11,8 +14,6 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  final _authService = AuthService();
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -20,41 +21,40 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  Future<void> _sendResetLink() async {
+  void _sendResetLink() {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
-
-    final result = await _authService.sendPasswordResetEmail(
-      email: _emailController.text,
+    context.read<AuthBloc>().add(
+      AuthForgotPasswordRequested(email: _emailController.text.trim()),
     );
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result['message']),
-          backgroundColor: result['success'] ? Colors.green : Colors.red,
-        ),
-      );
-
-      // Navigate back to login if successful
-      if (result['success']) {
-        Navigator.of(context).pop();
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.error && state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else if (state.status == AuthStatus.unauthenticated && state.errorMessage == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Password reset email sent! Check your inbox.'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.of(context).pop();
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state.status == AuthStatus.loading;
+        return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -263,7 +263,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         width: double.infinity,
                         height: 54,
                         child: ElevatedButton(
-                          onPressed: _isLoading ? null : _sendResetLink,
+                          onPressed: isLoading ? null : _sendResetLink,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFE53935),
                             shape: RoundedRectangleBorder(
@@ -271,7 +271,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             ),
                             elevation: 0,
                           ),
-                          child: _isLoading
+                          child: isLoading
                               ? const SizedBox(
                                   width: 22,
                                   height: 22,
@@ -381,6 +381,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ),
         ),
       ),
+        );
+      },
     );
   }
 }

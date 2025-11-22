@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:vitaro/core/services/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_event.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_state.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,8 +15,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _authService = AuthService();
-  bool _isLoading = false;
   bool _obscurePassword = true;
 
   @override
@@ -23,45 +24,35 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _signIn() async {
+  void _signIn() {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
-
-    final result = await _authService.signInWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
+    context.read<AuthBloc>().add(
+      AuthSignInRequested(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      ),
     );
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result['message']),
-          backgroundColor: result['success'] ? Colors.green : Colors.red,
-        ),
-      );
-
-      if (result['success']) {
-        // Navigate to Home and remove all previous routes to prevent back button return
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil('/home', (route) => false);
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Existing UI implementation kept identical, only logic above changed
-    return Scaffold(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.status == AuthStatus.error && state.errorMessage != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage!),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state.status == AuthStatus.loading;
+        return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
@@ -269,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       height: 54,
                       child: ElevatedButton(
-                        onPressed: _isLoading ? null : _signIn,
+                        onPressed: isLoading ? null : _signIn,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFE53935),
                           shape: RoundedRectangleBorder(
@@ -278,7 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           elevation: 0,
                           shadowColor: const Color(0x4DE53935),
                         ),
-                        child: _isLoading
+                        child: isLoading
                             ? const SizedBox(
                                 width: 22,
                                 height: 22,
@@ -368,6 +359,8 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+        );
+      },
     );
   }
 }
