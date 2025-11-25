@@ -21,10 +21,14 @@ class UserModel {
     this.isDonor = false,
   });
 
+  // Factory that calls the helper method, keeping Firestore dependency isolated
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>? ?? {};
+    return UserModel.fromMap(doc.data() as Map<String, dynamic>? ?? {}, doc.id);
+  }
 
-    // Handle Name
+  // New helper factory for easier testing (and cleaner code)
+  factory UserModel.fromMap(Map<String, dynamic> data, String uid) {
+    // Handle Name Logic
     String name = data['displayName'] ?? '';
     if (name.isEmpty) {
       final first = data['firstName'] ?? '';
@@ -33,10 +37,10 @@ class UserModel {
     }
 
     return UserModel(
-      uid: doc.id,
+      uid: uid,
       email: data['email'] ?? '',
       displayName: name,
-      // Fallback to email prefix if username is missing (e.g. Google Auth users)
+      // Fallback to email prefix if username is missing
       username: data['username'] ?? (data['email']?.split('@')[0] ?? 'User'),
       photoUrl: data['photoURL'] ?? data['profileImageUrl'],
       phoneNumber: data['phoneNumber'],
@@ -49,7 +53,7 @@ class UserModel {
     return {
       'email': email,
       'displayName': displayName,
-      'username': username, // Save username
+      'username': username,
       'photoURL': photoUrl,
       'phoneNumber': phoneNumber,
       'bloodType': bloodType,
