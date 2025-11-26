@@ -21,11 +21,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthFacebookSignInRequested>(_onFacebookSignInRequested);
     on<AuthForgotPasswordRequested>(_onForgotPasswordRequested);
 
-    // Listen to auth state changes
+    // Listen to auth state changes - trigger check for ALL changes (login/logout)
     _authSubscription = _authService.authStateChanges.listen((user) {
-      if (user != null) {
-        add(AuthCheckRequested());
-      }
+      add(AuthCheckRequested());
     });
   }
 
