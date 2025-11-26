@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vitaro/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:vitaro/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:vitaro/features/auth/presentation/bloc/auth_event.dart';
-import 'package:vitaro/features/auth/presentation/bloc/auth_state.dart';
 // Import your settings screen
 import 'package:vitaro/features/profile/presentation/screens/settings_screen.dart';
 // Import donation history to navigate there directly
