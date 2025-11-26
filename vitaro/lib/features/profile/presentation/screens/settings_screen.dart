@@ -65,7 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             // Notification Toggle
             SwitchListTile(
-              activeThumbcolor: const Color(0xFFE53935),
+              activeThumbColor: const Color(0xFFE53935),
               contentPadding: EdgeInsets.zero,
               title: const Text("Notification Reminders", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
               subtitle: const Text("Receive alerts when blood is needed nearby", style: TextStyle(fontSize: 12, color: Colors.grey)),
