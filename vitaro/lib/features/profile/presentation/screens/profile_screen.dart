@@ -2,6 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vitaro/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_event.dart';
+import 'package:vitaro/features/auth/presentation/bloc/auth_state.dart';
 // Import your settings screen
 import 'package:vitaro/features/profile/presentation/screens/settings_screen.dart';
 // Import donation history to navigate there directly
@@ -142,6 +145,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildOptionTile(Icons.help_outline, 'Help & Support', () {}),
 
                   _buildOptionTile(Icons.logout, 'Logout', () {
+                    context.read<AuthBloc>().add(AuthSignOutRequested());
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       '/login',

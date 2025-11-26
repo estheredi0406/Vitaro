@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,17 +8,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // Navigate to auth check after 5 seconds
-    Timer(const Duration(seconds: 5), () {
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/auth-check');
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
