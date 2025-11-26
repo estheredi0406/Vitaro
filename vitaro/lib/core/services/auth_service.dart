@@ -5,12 +5,8 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 /// Authentication Service for handling Firebase Auth operations
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
   final FacebookAuth _facebookAuth = FacebookAuth.instance;
-
-  // Web Client ID for Google Sign-In
-  static const String _serverClientId =
-      '284994311059-nsd1bq2j9n9g91jdbegsij8834nnfier.apps.googleusercontent.com';
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   /// Get current user
   User? get currentUser => _auth.currentUser;
@@ -113,17 +109,21 @@ class AuthService {
   /// Returns a Map with 'success' boolean and 'message' string
   Future<Map<String, dynamic>> signInWithGoogle() async {
     try {
-      // Initialize Google Sign-In with server client ID
-      await _googleSignIn.initialize(serverClientId: _serverClientId);
-
       // Trigger the Google authentication flow
-      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-      // Obtain the auth details from the Google account
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      // User cancelled the sign-in
+      if (googleUser == null) {
+        return {'success': false, 'message': 'Google sign-in cancelled'};
+      }
+
+      // Get the authentication details
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create a new credential for Firebase
       final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
