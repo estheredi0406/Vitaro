@@ -32,7 +32,6 @@ import 'package:vitaro/features/donation_history/presentation/screens/donation_h
 // Corrected Import: Pointing to Data Repository directly as no Domain layer exists
 import 'package:vitaro/features/emergency/data/repositories/emergency_repository.dart';
 import 'package:vitaro/features/emergency/presentation/screens/emergency_alerts_screen.dart';
-import 'package:vitaro/features/emergency/data/services/fcm_service.dart';
 
 // --- MEMBER 5: Profile Features ---
 import 'package:vitaro/features/profile/data/repositories/profile_repository.dart';
@@ -50,16 +49,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 }
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // Initialize FCM Service
-  FCMService.setNavigatorKey(navigatorKey);
-  await FCMService().initialize();
 
   runApp(const VitaroApp());
 }
@@ -133,7 +126,6 @@ class VitaroApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Vitaro',
           debugShowCheckedModeBanner: false,
-          navigatorKey: navigatorKey,
           theme: ThemeData(primarySwatch: Colors.red, useMaterial3: true),
 
           // ROUTING
