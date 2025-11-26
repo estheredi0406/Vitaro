@@ -29,17 +29,17 @@ class ScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
       // Conditionally show the back arrow
       leading: showBackArrow
           ? IconButton(
-        icon: const Icon(
-          Icons.arrow_back_ios_new,
-          color: AppTheme.textDark, // Use your theme color
-        ),
-        onPressed: () {
-          // Standard back navigation
-          if (Navigator.of(context).canPop()) {
-            Navigator.of(context).pop();
-          }
-        },
-      )
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: AppTheme.textDark, // Use your theme color
+              ),
+              onPressed: () {
+                // Standard back navigation
+                if (Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                }
+              },
+            )
           : null, // Don't show anything (e.g., for Dashboard)
     );
   }

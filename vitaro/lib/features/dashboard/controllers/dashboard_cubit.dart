@@ -7,25 +7,26 @@ import 'package:vitaro/features/dashboard/models/dashboard_user.dart';
 import 'package:vitaro/features/dashboard/models/recent_activity.dart';
 
 // CHANGED: Import the state file instead of using 'part'
-import 'dashboard_state.dart'; 
+import 'dashboard_state.dart';
 
 class DashboardCubit extends Cubit<DashboardState> {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
 
-  DashboardCubit({
-    FirebaseFirestore? firestore,
-    FirebaseAuth? auth,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _auth = auth ?? FirebaseAuth.instance,
-        super(DashboardInitial());
+  DashboardCubit({FirebaseFirestore? firestore, FirebaseAuth? auth})
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _auth = auth ?? FirebaseAuth.instance,
+      super(DashboardInitial());
 
   Future<void> fetchDashboardData() async {
     try {
       emit(DashboardLoading());
 
       // runtime mock flag
-      const useMock = bool.fromEnvironment('USE_MOCK_DASHBOARD', defaultValue: false);
+      const useMock = bool.fromEnvironment(
+        'USE_MOCK_DASHBOARD',
+        defaultValue: false,
+      );
       if (kDebugMode && useMock) {
         final mockUser = DashboardUser(
           id: 'mock-id',
@@ -51,11 +52,16 @@ class DashboardCubit extends Cubit<DashboardState> {
           firebaseUser = credential.user;
         } on FirebaseAuthException catch (authEx) {
           if (authEx.code == 'operation-not-allowed' ||
-              (authEx.message?.toLowerCase().contains('administrators') ?? false)) {
+              (authEx.message?.toLowerCase().contains('administrators') ??
+                  false)) {
             emit(DashboardUnauthenticated());
             return;
           }
-          emit(DashboardError('Authentication failed: ${authEx.message ?? authEx.code}'));
+          emit(
+            DashboardError(
+              'Authentication failed: ${authEx.message ?? authEx.code}',
+            ),
+          );
           return;
         } catch (e) {
           emit(DashboardError('Authentication failed.'));
@@ -82,7 +88,9 @@ class DashboardCubit extends Cubit<DashboardState> {
       if (!userDoc.exists) {
         final created = await _createMinimalDonorRecord(userRef, userId);
         if (!created) {
-          emit(DashboardError('Donor data not found and could not be created.'));
+          emit(
+            DashboardError('Donor data not found and could not be created.'),
+          );
           return;
         }
         userDoc = await userRef.get();
@@ -105,7 +113,9 @@ class DashboardCubit extends Cubit<DashboardState> {
             .get();
 
         if (donationSnapshot.docs.isNotEmpty) {
-          activities.add(RecentActivity.fromDonation(donationSnapshot.docs.first));
+          activities.add(
+            RecentActivity.fromDonation(donationSnapshot.docs.first),
+          );
         }
       } catch (e) {
         // non-fatal; continue
@@ -131,13 +141,18 @@ class DashboardCubit extends Cubit<DashboardState> {
       }
 
       activities.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-      emit(DashboardLoaded(user: user, activities: activities.take(2).toList()));
+      emit(
+        DashboardLoaded(user: user, activities: activities.take(2).toList()),
+      );
     } catch (e) {
       emit(DashboardError(e.toString()));
     }
   }
 
-  Future<bool> _createMinimalDonorRecord(DocumentReference userRef, String userId) async {
+  Future<bool> _createMinimalDonorRecord(
+    DocumentReference userRef,
+    String userId,
+  ) async {
     try {
       await userRef.set({
         'uid': userId,

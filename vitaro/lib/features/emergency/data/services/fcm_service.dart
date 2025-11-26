@@ -1,5 +1,8 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 // Top-level function for background message handling
 @pragma('vm:entry-point')
@@ -16,6 +19,22 @@ class FCMService {
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
+  static GlobalKey<NavigatorState>? navigatorKey;
+
+  static void setNavigatorKey(GlobalKey<NavigatorState> key) {
+    navigatorKey = key;
+  }
+
+  Future<void> _saveTokenToFirestore(String token) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set({'fcmToken': token}, SetOptions(merge: true));
+    }
+  }
+
   Future<void> initialize() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -31,11 +50,13 @@ class FCMService {
       return;
     }
 
-    await _firebaseMessaging.getToken();
-    // TODO: Save token to Firestore for user profile
+    final token = await _firebaseMessaging.getToken();
+    if (token != null) {
+      await _saveTokenToFirestore(token);
+    }
 
     _firebaseMessaging.onTokenRefresh.listen((newToken) {
-      // TODO: Update token in Firestore
+      _saveTokenToFirestore(newToken);
     });
 
     await _firebaseMessaging.subscribeToTopic('emergency_alerts');
@@ -70,7 +91,7 @@ class FCMService {
     await _localNotifications.initialize(
       settings,
       onDidReceiveNotificationResponse: (details) {
-        // TODO: Navigate to emergency alerts screen
+        _navigateToEmergencyAlerts();
       },
     );
   }
@@ -84,7 +105,11 @@ class FCMService {
   }
 
   void _handleNotificationTap(RemoteMessage message) {
-    // TODO: Navigate to emergency alerts screen
+    _navigateToEmergencyAlerts();
+  }
+
+  void _navigateToEmergencyAlerts() {
+    navigatorKey?.currentState?.pushNamed('/emergency-alerts');
   }
 
   Future<void> _showNotification({

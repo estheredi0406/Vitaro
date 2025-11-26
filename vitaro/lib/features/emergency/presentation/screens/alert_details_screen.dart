@@ -110,7 +110,7 @@ class _AlertDetailsScreenState extends State<AlertDetailsScreen> {
                   const SizedBox(height: 16),
 
                   // Description if available
-                    if (widget.alert.description != null &&
+                  if (widget.alert.description != null &&
                       widget.alert.description!.isNotEmpty) ...[
                     const Text(
                       'Additional Information',
@@ -202,7 +202,7 @@ class _AlertDetailsScreenState extends State<AlertDetailsScreen> {
             ),
           ],
         ),
-                child: Row(
+        child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
@@ -299,12 +299,17 @@ class _AlertDetailsScreenState extends State<AlertDetailsScreen> {
 
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      messenger.showSnackBar(const SnackBar(content: Text('Please login to respond')));
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Please login to respond')),
+      );
       return;
     }
 
     final repository = EmergencyRepository();
-    final hasResponded = await repository.hasUserResponded(widget.alert.id, user.uid);
+    final hasResponded = await repository.hasUserResponded(
+      widget.alert.id,
+      user.uid,
+    );
 
     if (hasResponded) {
       if (!mounted) return;

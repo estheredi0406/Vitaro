@@ -11,10 +11,10 @@ class FindCentersState extends Equatable {
   });
 
   const FindCentersState.initial()
-      : status = FindCentersStatus.initial,
-        centers = const <BloodCenter>[],
-        userPosition = null,
-        errorMessage = '';
+    : status = FindCentersStatus.initial,
+      centers = const <BloodCenter>[],
+      userPosition = null,
+      errorMessage = '';
 
   final FindCentersStatus status;
   final List<BloodCenter> centers;
@@ -41,4 +41,3 @@ class FindCentersState extends Equatable {
   @override
   List<Object?> get props => [status, centers, userPosition, errorMessage];
 }
-

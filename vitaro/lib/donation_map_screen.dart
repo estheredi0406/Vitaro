@@ -30,24 +30,21 @@ class _DonationMapScreenState extends State<DonationMapScreen> {
         "lat": -1.9530,
         "lng": 30.0920,
       },
-      {
-        "id": "2",
-        "name": "CHUK Hospital",
-        "lat": -1.9550,
-        "lng": 30.0600,
-      }
+      {"id": "2", "name": "CHUK Hospital", "lat": -1.9550, "lng": 30.0600},
     ];
 
     for (var c in centers) {
-      _markers.add(Marker(
-        markerId: MarkerId(c['id']),
-        position: LatLng(c['lat'], c['lng']),
-        infoWindow: InfoWindow(
-          title: c['name'],
-          snippet: "Tap for Directions",
-          onTap: () => _launchMaps(c['lat'], c['lng']),
+      _markers.add(
+        Marker(
+          markerId: MarkerId(c['id']),
+          position: LatLng(c['lat'], c['lng']),
+          infoWindow: InfoWindow(
+            title: c['name'],
+            snippet: "Tap for Directions",
+            onTap: () => _launchMaps(c['lat'], c['lng']),
+          ),
         ),
-      ));
+      );
     }
     setState(() {});
   }

@@ -8,7 +8,7 @@ class DonationHistoryBloc
   final DonationRepository donationRepository;
 
   DonationHistoryBloc({required this.donationRepository})
-      : super(DonationHistoryInitial()) {
+    : super(DonationHistoryInitial()) {
     on<FetchDonationHistory>((event, emit) async {
       emit(DonationHistoryLoading());
       try {

@@ -46,14 +46,18 @@ class DonationDetailSheet extends StatelessWidget {
                   Text(
                     "${donation.date.month}/${donation.date.day}/${donation.date.year}",
                     style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold),
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
               // Status Badge
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
@@ -61,7 +65,9 @@ class DonationDetailSheet extends StatelessWidget {
                 child: Text(
                   donation.status,
                   style: const TextStyle(
-                      color: Colors.green, fontWeight: FontWeight.bold),
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -72,7 +78,10 @@ class DonationDetailSheet extends StatelessWidget {
           Row(
             children: [
               _buildInfoItem(
-                  Icons.local_hospital, "Location", donation.location),
+                Icons.local_hospital,
+                "Location",
+                donation.location,
+              ),
               _buildInfoItem(Icons.water_drop, "Blood Type", "O+"),
             ],
           ),
@@ -80,7 +89,10 @@ class DonationDetailSheet extends StatelessWidget {
           Row(
             children: [
               _buildInfoItem(
-                  Icons.opacity, "Amount", "${donation.amountMl} ml"),
+                Icons.opacity,
+                "Amount",
+                "${donation.amountMl} ml",
+              ),
               _buildInfoItem(Icons.monitor_heart, "Vitals", "Normal"),
             ],
           ),
@@ -127,12 +139,16 @@ class DonationDetailSheet extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label,
-                    style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+                Text(
+                  label,
+                  style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                ),
                 Text(
                   value,
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],

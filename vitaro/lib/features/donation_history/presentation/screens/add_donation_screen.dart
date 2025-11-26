@@ -13,8 +13,9 @@ class AddDonationScreen extends StatefulWidget {
 }
 
 class _AddDonationScreenState extends State<AddDonationScreen> {
-  final _locationController =
-      TextEditingController(text: 'Kigali City Hospital');
+  final _locationController = TextEditingController(
+    text: 'Kigali City Hospital',
+  );
   final _amountController = TextEditingController(text: '450');
   final _formKey = GlobalKey<FormState>();
 
@@ -30,8 +31,8 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
       );
 
       context.read<AddDonationBloc>().add(
-            SaveNewDonation(donation: newDonation),
-          );
+        SaveNewDonation(donation: newDonation),
+      );
     }
   }
 
@@ -62,9 +63,9 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
             );
             Navigator.pop(context, true);
           } else if (state is AddDonationFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error: ${state.message}')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('Error: ${state.message}')));
           }
         },
         child: Padding(
@@ -85,8 +86,10 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                   controller: _locationController,
                   decoration: InputDecoration(
                     labelText: 'Donation Location',
-                    prefixIcon: const Icon(Icons.location_on_outlined,
-                        color: Colors.grey),
+                    prefixIcon: const Icon(
+                      Icons.location_on_outlined,
+                      color: Colors.grey,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -106,8 +109,10 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'Amount (ml)',
-                    prefixIcon: const Icon(Icons.bloodtype_outlined,
-                        color: Colors.grey),
+                    prefixIcon: const Icon(
+                      Icons.bloodtype_outlined,
+                      color: Colors.grey,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -118,8 +123,8 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                   ),
                   validator: (value) =>
                       int.tryParse(value!) == null || int.parse(value) <= 0
-                          ? 'Enter a valid amount'
-                          : null,
+                      ? 'Enter a valid amount'
+                      : null,
                 ),
 
                 const Spacer(),
@@ -128,7 +133,8 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                 SizedBox(
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: context.watch<AddDonationBloc>().state
+                    onPressed:
+                        context.watch<AddDonationBloc>().state
                             is AddDonationLoading
                         ? null
                         : _submitDonation,
@@ -140,17 +146,23 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                       ),
                       elevation: 2,
                     ),
-                    child: context.watch<AddDonationBloc>().state
+                    child:
+                        context.watch<AddDonationBloc>().state
                             is AddDonationLoading
                         ? const SizedBox(
                             height: 24,
                             width: 24,
                             child: CircularProgressIndicator(
-                                color: Colors.white, strokeWidth: 2))
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
                         : const Text(
                             'Record Donation',
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                   ),
                 ),

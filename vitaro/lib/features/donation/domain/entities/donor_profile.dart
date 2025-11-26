@@ -14,18 +14,23 @@ class DonorProfile extends Equatable {
     this.nextEligibilityDate,
   });
 
-  factory DonorProfile.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+  factory DonorProfile.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data() ?? <String, dynamic>{};
     return DonorProfile(
       id: doc.id,
       name: data['name'] as String? ?? 'Donor',
       bloodType: data['bloodType'] as String? ?? 'O+',
       hemoglobin: (data['hemoglobin'] as num?)?.toDouble() ?? 14.0,
-      bloodPressureSystolic: (data['bloodPressureSystolic'] as num?)?.toInt() ?? 120,
-      bloodPressureDiastolic: (data['bloodPressureDiastolic'] as num?)?.toInt() ?? 80,
+      bloodPressureSystolic:
+          (data['bloodPressureSystolic'] as num?)?.toInt() ?? 120,
+      bloodPressureDiastolic:
+          (data['bloodPressureDiastolic'] as num?)?.toInt() ?? 80,
       pulse: (data['pulse'] as num?)?.toInt() ?? 70,
       lastDonationDate: (data['lastDonationDate'] as Timestamp?)?.toDate(),
-      nextEligibilityDate: (data['nextEligibilityDate'] as Timestamp?)?.toDate(),
+      nextEligibilityDate: (data['nextEligibilityDate'] as Timestamp?)
+          ?.toDate(),
     );
   }
 
@@ -47,8 +52,9 @@ class DonorProfile extends Equatable {
       'bloodPressureSystolic': bloodPressureSystolic,
       'bloodPressureDiastolic': bloodPressureDiastolic,
       'pulse': pulse,
-      'lastDonationDate':
-          lastDonationDate != null ? Timestamp.fromDate(lastDonationDate!) : null,
+      'lastDonationDate': lastDonationDate != null
+          ? Timestamp.fromDate(lastDonationDate!)
+          : null,
       'nextEligibilityDate': nextEligibilityDate != null
           ? Timestamp.fromDate(nextEligibilityDate!)
           : null,
@@ -74,15 +80,14 @@ class DonorProfile extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        bloodType,
-        hemoglobin,
-        bloodPressureSystolic,
-        bloodPressureDiastolic,
-        pulse,
-        lastDonationDate,
-        nextEligibilityDate,
-      ];
+    id,
+    name,
+    bloodType,
+    hemoglobin,
+    bloodPressureSystolic,
+    bloodPressureDiastolic,
+    pulse,
+    lastDonationDate,
+    nextEligibilityDate,
+  ];
 }
-

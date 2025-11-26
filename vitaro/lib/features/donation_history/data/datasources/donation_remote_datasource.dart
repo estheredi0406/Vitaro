@@ -17,6 +17,10 @@ class DonationRemoteDataSourceImpl implements DonationRemoteDataSource {
     // We also ensure the 'donorId' is included in the data
     final data = donation.toFirestore();
     data['donorId'] = userId; 
+    final donationCollection = firestore
+        .collection('users')
+        .doc(userId)
+        .collection('donations');
 
     await firestore.collection('donations').add(data);
   }

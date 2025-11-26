@@ -19,7 +19,8 @@ class SelectCenterScreen extends StatelessWidget {
 
     // *** THE REAL FIX ***
     final googleMapsUrl = Uri.parse(
-        "https://www.google.com/maps/search/?api=1&query=$lat,$lng");
+      "https://www.google.com/maps/search/?api=1&query=$lat,$lng",
+    );
 
     try {
       if (await canLaunchUrl(googleMapsUrl)) {
@@ -50,9 +51,10 @@ class SelectCenterScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4)),
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
                 ],
               ),
               child: Column(
@@ -63,10 +65,14 @@ class SelectCenterScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                            child: Text(center.address,
-                                style: const TextStyle(
-                                    fontSize: 16,
-                                    decoration: TextDecoration.underline))),
+                          child: Text(
+                            center.address,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
                         const Icon(Icons.directions, color: Colors.blue),
                       ],
                     ),
@@ -74,8 +80,11 @@ class SelectCenterScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Icon(Icons.phone,
-                          size: 18, color: AppTheme.primaryRed),
+                      const Icon(
+                        Icons.phone,
+                        size: 18,
+                        color: AppTheme.primaryRed,
+                      ),
                       const SizedBox(width: 8),
                       Text(center.phone),
                     ],
@@ -84,8 +93,11 @@ class SelectCenterScreen extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.schedule,
-                          size: 18, color: AppTheme.primaryRed),
+                      const Icon(
+                        Icons.schedule,
+                        size: 18,
+                        color: AppTheme.primaryRed,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(child: Text(center.openingHours)),
                     ],
@@ -98,10 +110,12 @@ class SelectCenterScreen extends StatelessWidget {
                         .map(
                           (service) => Chip(
                             label: Text(service),
-                            backgroundColor:
-                                AppTheme.primaryRed.withValues(alpha: 0.1),
-                            labelStyle:
-                                const TextStyle(color: AppTheme.primaryRed),
+                            backgroundColor: AppTheme.primaryRed.withValues(
+                              alpha: 0.1,
+                            ),
+                            labelStyle: const TextStyle(
+                              color: AppTheme.primaryRed,
+                            ),
                           ),
                         )
                         .toList(),

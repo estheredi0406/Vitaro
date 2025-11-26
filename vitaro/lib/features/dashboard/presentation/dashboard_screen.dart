@@ -7,6 +7,9 @@ import 'package:vitaro/core/theme/app_theme.dart';
 import 'package:vitaro/features/dashboard/controllers/dashboard_cubit.dart';
 import 'package:vitaro/features/dashboard/controllers/dashboard_state.dart';
 
+// Profile Bloc (Added to fetch real blood type)
+import 'package:vitaro/features/profile/presentation/bloc/profile_bloc.dart';
+
 // Models
 import 'package:vitaro/features/dashboard/models/dashboard_user.dart';
 import 'package:vitaro/features/dashboard/models/recent_activity.dart';
@@ -41,10 +44,7 @@ class _DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const ScreenAppBar(
-        title: 'Vitaro',
-        showBackArrow: false,
-      ),
+      appBar: const ScreenAppBar(title: 'Vitaro', showBackArrow: false),
       body: BlocBuilder<DashboardCubit, DashboardState>(
         builder: (context, state) {
           if (state is DashboardLoading || state is DashboardInitial) {
@@ -52,24 +52,31 @@ class _DashboardView extends StatelessWidget {
           }
           if (state is DashboardError) {
             return Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, color: Colors.red, size: 48),
-                const SizedBox(height: 16),
-                Text('Error: ${state.message}', textAlign: TextAlign.center),
-                const SizedBox(height: 16),
-                ElevatedButton(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                  const SizedBox(height: 16),
+                  Text('Error: ${state.message}', textAlign: TextAlign.center),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
                     onPressed: () =>
                         context.read<DashboardCubit>().fetchDashboardData(),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryRed),
-                    child: const Text("Retry"))
-              ],
-            ));
+                      backgroundColor: AppTheme.primaryRed,
+                    ),
+                    child: const Text("Retry"),
+                  ),
+                ],
+              ),
+            );
           }
           if (state is DashboardLoaded) {
-            return _buildDashboardContent(context, state.user, state.activities);
+            return _buildDashboardContent(
+              context,
+              state.user,
+              state.activities,
+            );
           }
           return const Center(child: Text('Something went wrong.'));
         },
@@ -90,7 +97,28 @@ class _DashboardView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BloodTypeCard(user: user),
+            // MODIFIED: Use ProfileBloc to get the real blood type
+            BlocBuilder<ProfileBloc, ProfileState>(
+              builder: (context, profileState) {
+                String displayType = "Not Set"; // Default fallback
+
+                if (profileState is ProfileLoaded) {
+                  // Check if the user has set a blood type in their profile
+                  if (profileState.user.bloodType != null &&
+                      profileState.user.bloodType!.isNotEmpty) {
+                    displayType = profileState.user.bloodType!;
+                  }
+                } else {
+                  // Ensure profile data is loaded if it isn't already
+                  context.read<ProfileBloc>().add(LoadProfile());
+                }
+
+                return BloodTypeCard(
+                  user: user,
+                  bloodTypeOverride: displayType, // Inject the real value
+                );
+              },
+            ),
             const SizedBox(height: 24),
             Row(
               children: [
@@ -185,13 +213,15 @@ class DashboardMapPreview extends StatelessWidget {
               Container(color: Colors.black.withValues(alpha: 0.1)),
               Center(
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: const [
-                      BoxShadow(color: Colors.black26, blurRadius: 8)
+                      BoxShadow(color: Colors.black26, blurRadius: 8),
                     ],
                   ),
                   child: Row(
@@ -199,10 +229,13 @@ class DashboardMapPreview extends StatelessWidget {
                     children: const [
                       Icon(Icons.map, color: Colors.red, size: 20),
                       SizedBox(width: 8),
-                      Text("Find Nearby Centers",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87)),
+                      Text(
+                        "Find Nearby Centers",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
                     ],
                   ),
                 ),

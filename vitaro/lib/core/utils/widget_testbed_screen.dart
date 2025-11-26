@@ -37,7 +37,11 @@ class WidgetTestbedScreen extends StatelessWidget {
                 children: [
                   InfoCard(title: 'Hemoglobin', value: '14.2', unit: 'g/dl'),
                   SizedBox(width: 12),
-                  InfoCard(title: 'Blood Pressure', value: '120/80', unit: 'mmHg'),
+                  InfoCard(
+                    title: 'Blood Pressure',
+                    value: '120/80',
+                    unit: 'mmHg',
+                  ),
                   SizedBox(width: 12),
                   InfoCard(title: 'Pulse', value: '72', unit: 'bpm'),
                 ],
@@ -51,10 +55,7 @@ class WidgetTestbedScreen extends StatelessWidget {
               const SizedBox(height: 8),
 
               // 1. Add your CustomButton here
-              CustomButton(
-                text: 'Sign In',
-                onPressed: () {},
-              ),
+              CustomButton(text: 'Sign In', onPressed: () {}),
               const SizedBox(height: 12),
               CustomButton(
                 text: 'Loading...',

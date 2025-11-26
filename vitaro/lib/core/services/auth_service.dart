@@ -5,11 +5,8 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 /// Authentication Service for handling Firebase Auth operations
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
   final FacebookAuth _facebookAuth = FacebookAuth.instance;
-
-  // Web Client ID for Google Sign-In
-  static const String _serverClientId = '284994311059-nsd1bq2j9n9g91jdbegsij8834nnfier.apps.googleusercontent.com';
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   /// Get current user
   User? get currentUser => _auth.currentUser;
@@ -28,10 +25,7 @@ class AuthService {
         email: email.trim(),
         password: password,
       );
-      return {
-        'success': true,
-        'message': 'Login successful',
-      };
+      return {'success': true, 'message': 'Login successful'};
     } on FirebaseAuthException catch (e) {
       String errorMessage;
 
@@ -55,16 +49,14 @@ class AuthService {
           errorMessage = 'Invalid email or password.';
           break;
         case 'network-request-failed':
-          errorMessage = 'Network error. Please check your internet connection.';
+          errorMessage =
+              'Network error. Please check your internet connection.';
           break;
         default:
           errorMessage = 'Login failed: ${e.message ?? 'Unknown error'}';
       }
 
-      return {
-        'success': false,
-        'message': errorMessage,
-      };
+      return {'success': false, 'message': errorMessage};
     } catch (e) {
       return {
         'success': false,
@@ -82,7 +74,8 @@ class AuthService {
       await _auth.sendPasswordResetEmail(email: email.trim());
       return {
         'success': true,
-        'message': 'Password reset email sent to $email. Please check your inbox.',
+        'message':
+            'Password reset email sent to $email. Please check your inbox.',
       };
     } on FirebaseAuthException catch (e) {
       String errorMessage;
@@ -95,16 +88,15 @@ class AuthService {
           errorMessage = 'Invalid email address format.';
           break;
         case 'network-request-failed':
-          errorMessage = 'Network error. Please check your internet connection.';
+          errorMessage =
+              'Network error. Please check your internet connection.';
           break;
         default:
-          errorMessage = 'Failed to send reset email: ${e.message ?? 'Unknown error'}';
+          errorMessage =
+              'Failed to send reset email: ${e.message ?? 'Unknown error'}';
       }
 
-      return {
-        'success': false,
-        'message': errorMessage,
-      };
+      return {'success': false, 'message': errorMessage};
     } catch (e) {
       return {
         'success': false,
@@ -117,31 +109,35 @@ class AuthService {
   /// Returns a Map with 'success' boolean and 'message' string
   Future<Map<String, dynamic>> signInWithGoogle() async {
     try {
-      // Initialize Google Sign-In with server client ID
-      await _googleSignIn.initialize(serverClientId: _serverClientId);
-
       // Trigger the Google authentication flow
-      final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-      // Obtain the auth details from the Google account
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      // User cancelled the sign-in
+      if (googleUser == null) {
+        return {'success': false, 'message': 'Google sign-in cancelled'};
+      }
+
+      // Get the authentication details
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Create a new credential for Firebase
-      final credential = GoogleAuthProvider.credential(idToken: googleAuth.idToken);
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
       // Sign in to Firebase with the Google credential
       await _auth.signInWithCredential(credential);
 
-      return {
-        'success': true,
-        'message': 'Google sign-in successful',
-      };
+      return {'success': true, 'message': 'Google sign-in successful'};
     } on FirebaseAuthException catch (e) {
       String errorMessage;
 
       switch (e.code) {
         case 'account-exists-with-different-credential':
-          errorMessage = 'An account already exists with this email using a different sign-in method.';
+          errorMessage =
+              'An account already exists with this email using a different sign-in method.';
           break;
         case 'invalid-credential':
           errorMessage = 'Invalid credentials. Please try again.';
@@ -153,16 +149,15 @@ class AuthService {
           errorMessage = 'This account has been disabled.';
           break;
         case 'network-request-failed':
-          errorMessage = 'Network error. Please check your internet connection.';
+          errorMessage =
+              'Network error. Please check your internet connection.';
           break;
         default:
-          errorMessage = 'Google sign-in failed: ${e.message ?? 'Unknown error'}';
+          errorMessage =
+              'Google sign-in failed: ${e.message ?? 'Unknown error'}';
       }
 
-      return {
-        'success': false,
-        'message': errorMessage,
-      };
+      return {'success': false, 'message': errorMessage};
     } catch (e) {
       return {
         'success': false,
@@ -194,24 +189,21 @@ class AuthService {
         final String token = accessToken.token;
 
         // Create a credential from the access token
-        final OAuthCredential credential = FacebookAuthProvider.credential(token);
+        final OAuthCredential credential = FacebookAuthProvider.credential(
+          token,
+        );
 
         // Sign in to Firebase with the Facebook credential
         await _auth.signInWithCredential(credential);
 
-        return {
-          'success': true,
-          'message': 'Facebook sign-in successful',
-        };
+        return {'success': true, 'message': 'Facebook sign-in successful'};
       } else if (result.status == LoginStatus.cancelled) {
-        return {
-          'success': false,
-          'message': 'Facebook sign-in cancelled',
-        };
+        return {'success': false, 'message': 'Facebook sign-in cancelled'};
       } else {
         return {
           'success': false,
-          'message': 'Facebook sign-in failed: ${result.message ?? 'Unknown error'}',
+          'message':
+              'Facebook sign-in failed: ${result.message ?? 'Unknown error'}',
         };
       }
     } on FirebaseAuthException catch (e) {
@@ -219,7 +211,8 @@ class AuthService {
 
       switch (e.code) {
         case 'account-exists-with-different-credential':
-          errorMessage = 'An account already exists with this email using a different sign-in method.';
+          errorMessage =
+              'An account already exists with this email using a different sign-in method.';
           break;
         case 'invalid-credential':
           errorMessage = 'Invalid credentials. Please try again.';
@@ -231,16 +224,15 @@ class AuthService {
           errorMessage = 'This account has been disabled.';
           break;
         case 'network-request-failed':
-          errorMessage = 'Network error. Please check your internet connection.';
+          errorMessage =
+              'Network error. Please check your internet connection.';
           break;
         default:
-          errorMessage = 'Facebook sign-in failed: ${e.message ?? 'Unknown error'}';
+          errorMessage =
+              'Facebook sign-in failed: ${e.message ?? 'Unknown error'}';
       }
 
-      return {
-        'success': false,
-        'message': errorMessage,
-      };
+      return {'success': false, 'message': errorMessage};
     } catch (e) {
       return {
         'success': false,
@@ -252,8 +244,20 @@ class AuthService {
   /// Sign out
   Future<void> signOut() async {
     await _auth.signOut();
-    await _googleSignIn.signOut();
-    await _facebookAuth.logOut();
+
+    // Try to sign out from Google (ignore errors if not signed in with Google)
+    try {
+      await _googleSignIn.signOut();
+    } catch (_) {
+      // Ignore - user may not have signed in with Google
+    }
+
+    // Try to sign out from Facebook (ignore errors if not signed in with Facebook)
+    try {
+      await _facebookAuth.logOut();
+    } catch (_) {
+      // Ignore - user may not have signed in with Facebook
+    }
   }
 
   /// Create account with email and password
@@ -267,10 +271,7 @@ class AuthService {
         email: email.trim(),
         password: password,
       );
-      return {
-        'success': true,
-        'message': 'Account created successfully',
-      };
+      return {'success': true, 'message': 'Account created successfully'};
     } on FirebaseAuthException catch (e) {
       String errorMessage;
 
@@ -285,19 +286,19 @@ class AuthService {
           errorMessage = 'Email/password accounts are not enabled.';
           break;
         case 'weak-password':
-          errorMessage = 'Password is too weak. Please use a stronger password.';
+          errorMessage =
+              'Password is too weak. Please use a stronger password.';
           break;
         case 'network-request-failed':
-          errorMessage = 'Network error. Please check your internet connection.';
+          errorMessage =
+              'Network error. Please check your internet connection.';
           break;
         default:
-          errorMessage = 'Account creation failed: ${e.message ?? 'Unknown error'}';
+          errorMessage =
+              'Account creation failed: ${e.message ?? 'Unknown error'}';
       }
 
-      return {
-        'success': false,
-        'message': errorMessage,
-      };
+      return {'success': false, 'message': errorMessage};
     } catch (e) {
       return {
         'success': false,

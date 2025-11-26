@@ -55,8 +55,7 @@ class AlertNotificationService {
 
     await _localNotifications.initialize(
       settings,
-      onDidReceiveNotificationResponse: (details) {
-      },
+      onDidReceiveNotificationResponse: (details) {},
     );
 
     // Create notification channel for Android

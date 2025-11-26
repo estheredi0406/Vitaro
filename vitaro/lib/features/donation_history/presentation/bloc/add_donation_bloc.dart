@@ -7,7 +7,7 @@ class AddDonationBloc extends Bloc<AddDonationEvent, AddDonationState> {
   final DonationRepository donationRepository;
 
   AddDonationBloc({required this.donationRepository})
-      : super(AddDonationInitial()) {
+    : super(AddDonationInitial()) {
     on<SaveNewDonation>((event, emit) async {
       emit(AddDonationLoading());
 

@@ -23,7 +23,9 @@ class BloodCenter extends Equatable {
     required this.openingHours,
   });
 
-  factory BloodCenter.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+  factory BloodCenter.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data() ?? <String, dynamic>{};
     return BloodCenter(
       id: doc.id,
@@ -32,7 +34,9 @@ class BloodCenter extends Equatable {
       phone: data['phone'] as String? ?? 'N/A',
       status: data['status'] as String? ?? 'Unknown',
       location: data['location'] as GeoPoint? ?? const GeoPoint(0, 0),
-      services: List<String>.from(data['services'] as List? ?? const <String>[]),
+      services: List<String>.from(
+        data['services'] as List? ?? const <String>[],
+      ),
       openingHours: data['openingHours'] as String? ?? 'Not specified',
     );
   }
@@ -43,14 +47,13 @@ class BloodCenter extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        address,
-        phone,
-        status,
-        location,
-        services,
-        openingHours,
-      ];
+    id,
+    name,
+    address,
+    phone,
+    status,
+    location,
+    services,
+    openingHours,
+  ];
 }
-

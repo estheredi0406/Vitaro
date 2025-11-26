@@ -29,7 +29,9 @@ class RecentActivity extends Equatable {
         ? timestampRaw.toDate()
         : DateTime.now();
     final status = (data['status'] as String?)?.toLowerCase() ?? 'scheduled';
-    final title = status == 'completed' ? 'Donation Complete' : 'Donation Scheduled';
+    final title = status == 'completed'
+        ? 'Donation Complete'
+        : 'Donation Scheduled';
     final subtitleSuffix = status == 'completed'
         ? 'Completed on'
         : 'Scheduled for';

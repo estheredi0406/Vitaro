@@ -14,4 +14,3 @@ class EligibilityResult extends Equatable {
   @override
   List<Object?> get props => [isEligible, reasons, nextEligibleDate];
 }
-

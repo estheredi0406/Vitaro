@@ -44,7 +44,10 @@ class _FindCentersViewState extends State<_FindCentersView>
   void initState() {
     super.initState();
     _tabController = TabController(
-        length: 2, vsync: this, initialIndex: widget.initialIndex);
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialIndex,
+    );
     _searchController = TextEditingController();
 
     // Listen to the controller to update search query
@@ -75,9 +78,9 @@ class _FindCentersViewState extends State<_FindCentersView>
         listener: (context, state) {
           if (state.errorMessage.isNotEmpty &&
               state.status == FindCentersStatus.loaded) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage)));
           }
         },
         builder: (context, state) {
@@ -86,15 +89,19 @@ class _FindCentersViewState extends State<_FindCentersView>
           }
 
           if (state.hasError && state.centers.isEmpty) {
-            return _ErrorView(onRetry: () {
-              context.read<FindCentersCubit>().loadCenters();
-            });
+            return _ErrorView(
+              onRetry: () {
+                context.read<FindCentersCubit>().loadCenters();
+              },
+            );
           }
 
           final filteredCenters = state.centers
-              .where((center) => center.name
-                  .toLowerCase()
-                  .contains(_searchQuery.toLowerCase()))
+              .where(
+                (center) => center.name.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                ),
+              )
               .toList();
 
           return Column(
@@ -125,7 +132,8 @@ class _FindCentersViewState extends State<_FindCentersView>
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  physics: const NeverScrollableScrollPhysics(), // Better for maps
+                  physics:
+                      const NeverScrollableScrollPhysics(), // Better for maps
                   children: [
                     _CentersListView(centers: filteredCenters),
                     _CentersMapView(
@@ -153,9 +161,7 @@ class _CentersListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (centers.isEmpty) {
-      return const Center(
-        child: Text('No centers found nearby'),
-      );
+      return const Center(child: Text('No centers found nearby'));
     }
 
     return ListView.builder(
@@ -169,8 +175,10 @@ class _CentersListView extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: ListTile(
-            title: Text(center.name,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(
+              center.name,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -179,10 +187,12 @@ class _CentersListView extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text('Hours: ${center.openingHours}'),
                 const SizedBox(height: 4),
-                Text(center.status,
-                    style: TextStyle(
-                      color: center.isOpen ? Colors.green : Colors.orange,
-                    )),
+                Text(
+                  center.status,
+                  style: TextStyle(
+                    color: center.isOpen ? Colors.green : Colors.orange,
+                  ),
+                ),
               ],
             ),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -202,10 +212,7 @@ class _CentersListView extends StatelessWidget {
 }
 
 class _CentersMapView extends StatelessWidget {
-  const _CentersMapView({
-    required this.centers,
-    required this.userPosition,
-  });
+  const _CentersMapView({required this.centers, required this.userPosition});
 
   final List<BloodCenter> centers;
   final Position? userPosition;
@@ -247,7 +254,8 @@ class _CentersMapView extends StatelessWidget {
           markerId: const MarkerId('user'),
           position: LatLng(userPosition!.latitude, userPosition!.longitude),
           icon: BitmapDescriptor.defaultMarkerWithHue(
-              BitmapDescriptor.hueAzure),
+            BitmapDescriptor.hueAzure,
+          ),
           infoWindow: const InfoWindow(title: 'You are here'),
         ),
       );

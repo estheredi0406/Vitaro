@@ -41,7 +41,11 @@ class BookingSuccessScreen extends StatelessWidget {
                 color: AppTheme.primaryRed,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.volunteer_activism, color: Colors.white, size: 56),
+              child: const Icon(
+                Icons.volunteer_activism,
+                color: Colors.white,
+                size: 56,
+              ),
             ),
             const SizedBox(height: 24),
             const Text(
@@ -117,11 +121,7 @@ class BookingSuccessScreen extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.label,
-    required this.value,
-    this.valueStyle,
-  });
+  const _InfoRow({required this.label, required this.value, this.valueStyle});
 
   final String label;
   final String value;
@@ -147,4 +147,3 @@ class _InfoRow extends StatelessWidget {
     );
   }
 }
-
