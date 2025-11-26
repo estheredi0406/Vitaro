@@ -244,8 +244,20 @@ class AuthService {
   /// Sign out
   Future<void> signOut() async {
     await _auth.signOut();
-    await _googleSignIn.signOut();
-    await _facebookAuth.logOut();
+
+    // Try to sign out from Google (ignore errors if not signed in with Google)
+    try {
+      await _googleSignIn.signOut();
+    } catch (_) {
+      // Ignore - user may not have signed in with Google
+    }
+
+    // Try to sign out from Facebook (ignore errors if not signed in with Facebook)
+    try {
+      await _facebookAuth.logOut();
+    } catch (_) {
+      // Ignore - user may not have signed in with Facebook
+    }
   }
 
   /// Create account with email and password
